@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Frontend Tasks — Hospital Project</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=IBM+Plex+Mono:wght@400;600&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0a0e1a;
+      --surface: #111827;
+      --card: #161d2e;
+      --border: #1f2d45;
+      --accent: #3b82f6;
+      --accent2: #06b6d4;
+      --accent3: #8b5cf6;
+      --green: #10b981;
+      --yellow: #f59e0b;
+      --red: #ef4444;
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --code-bg: #0d1117;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Manrope', sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* Background grid */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(59,130,246,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59,130,246,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 60px 24px 100px;
+    }
+
+    /* HEADER */
+    header {
+      text-align: center;
+      margin-bottom: 70px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(59,130,246,0.12);
+      border: 1px solid rgba(59,130,246,0.3);
+      color: var(--accent);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      padding: 6px 16px;
+      border-radius: 100px;
+      margin-bottom: 20px;
+      letter-spacing: 0.05em;
+    }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(36px, 6vw, 64px);
+      font-weight: 800;
+      line-height: 1.1;
+      background: linear-gradient(135deg, #fff 30%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 16px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 17px;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    /* PROGRESS BAR */
+    .progress-strip {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-bottom: 60px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .progress-strip span {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .bar-wrap {
+      flex: 1;
+      min-width: 200px;
+      height: 8px;
+      background: var(--border);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 100px;
+      transition: width 1.5s cubic-bezier(0.4,0,0.2,1);
+    }
+    .task-count {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+
+    /* TASK CARDS */
+    .task {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      margin-bottom: 40px;
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+    .task:hover { border-color: rgba(59,130,246,0.4); }
+
+    .task-header {
+      padding: 28px 32px 24px;
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .task-number {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+      background: var(--border);
+      padding: 4px 10px;
+      border-radius: 6px;
+      white-space: nowrap;
+      margin-top: 4px;
+      flex-shrink: 0;
+    }
+
+    .task-title-wrap { flex: 1; }
+
+    .task-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .task-meta {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 100px;
+      border: 1px solid;
+    }
+    .tag.easy { color: var(--green); border-color: rgba(16,185,129,0.3); background: rgba(16,185,129,0.08); }
+    .tag.medium { color: var(--yellow); border-color: rgba(245,158,11,0.3); background: rgba(245,158,11,0.08); }
+    .tag.hard { color: var(--red); border-color: rgba(239,68,68,0.3); background: rgba(239,68,68,0.08); }
+    .tag.html { color: var(--accent2); border-color: rgba(6,182,212,0.3); background: rgba(6,182,212,0.08); }
+    .tag.js { color: #f7df1e; border-color: rgba(247,223,30,0.3); background: rgba(247,223,30,0.08); }
+    .tag.react { color: #61dafb; border-color: rgba(97,218,251,0.3); background: rgba(97,218,251,0.08); }
+    .tag.css { color: var(--accent3); border-color: rgba(139,92,246,0.3); background: rgba(139,92,246,0.08); }
+
+    .chevron {
+      font-size: 20px;
+      color: var(--muted);
+      transition: transform 0.3s;
+      margin-top: 4px;
+      flex-shrink: 0;
+    }
+    .task.open .chevron { transform: rotate(180deg); }
+
+    /* TASK BODY */
+    .task-body {
+      display: none;
+      padding: 0 32px 32px;
+    }
+    .task.open .task-body { display: block; }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin-bottom: 28px;
+    }
+
+    .section-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      margin-top: 28px;
+    }
+
+    p { color: #a0aec0; margin-bottom: 14px; }
+    p strong { color: var(--text); }
+
+    ul, ol {
+      padding-left: 20px;
+      color: #a0aec0;
+      margin-bottom: 16px;
+    }
+    li { margin-bottom: 8px; }
+    li strong { color: var(--text); }
+
+    /* CODE BLOCKS */
+    .code-block {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 16px 0 24px;
+    }
+
+    .code-label {
+      background: var(--border);
+      padding: 8px 16px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .code-label::before {
+      content: '';
+      display: inline-block;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    pre {
+      padding: 20px;
+      overflow-x: auto;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13.5px;
+      line-height: 1.8;
+    }
+
+    .kw { color: #ff79c6; }
+    .fn { color: #8be9fd; }
+    .str { color: #f1fa8c; }
+    .cm { color: #6272a4; font-style: italic; }
+    .tag-c { color: #ff6e6e; }
+    .attr { color: #50fa7b; }
+    .num { color: #bd93f9; }
+    .var { color: #f8f8f2; }
+    .prop { color: #8be9fd; }
+
+    /* EXPLANATION BOXES */
+    .explain-box {
+      background: rgba(59,130,246,0.06);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 10px 10px 0;
+      padding: 16px 20px;
+      margin: 16px 0;
+    }
+    .explain-box.green {
+      background: rgba(16,185,129,0.06);
+      border-color: var(--green);
+    }
+    .explain-box.yellow {
+      background: rgba(245,158,11,0.06);
+      border-color: var(--yellow);
+    }
+    .explain-box p { margin: 0; }
+
+    /* STEPS */
+    .steps { counter-reset: step; list-style: none; padding: 0; }
+    .steps li {
+      counter-increment: step;
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+      align-items: flex-start;
+    }
+    .steps li::before {
+      content: counter(step);
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      min-width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .steps li div { color: #a0aec0; }
+    .steps li strong { color: var(--text); display: block; margin-bottom: 4px; }
+
+    /* TASK COLORS */
+    .task[data-task="1"] .task-title { color: #60a5fa; }
+    .task[data-task="2"] .task-title { color: #34d399; }
+    .task[data-task="3"] .task-title { color: #a78bfa; }
+    .task[data-task="4"] .task-title { color: #fb923c; }
+    .task[data-task="5"] .task-title { color: #f472b6; }
+
+    /* INLINE CODE */
+    code {
+      font-family: 'IBM Plex Mono', monospace;
+      background: rgba(255,255,255,0.07);
+      padding: 2px 7px;
+      border-radius: 5px;
+      font-size: 13px;
+      color: var(--accent2);
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 40px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .tip-banner {
+      background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(139,92,246,0.1));
+      border: 1px solid rgba(59,130,246,0.2);
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-bottom: 50px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .tip-icon { font-size: 28px; flex-shrink: 0; }
+    .tip-banner h3 { font-family: 'Syne', sans-serif; font-size: 16px; color: #fff; margin-bottom: 6px; }
+    .tip-banner p { margin: 0; font-size: 14px; }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <header>
+    <div class="badge">👨‍💻 DEV 1 — FRONTEND DEVELOPER</div>
+    <h1>Your Tasks<br/>Explained Simply</h1>
+    <p class="subtitle">Hospital Management System — everything you need to build, broken down step by step. No jargon.</p>
+  </header>
+
+  <!-- TIP BANNER -->
+  <div class="tip-banner">
+    <div class="tip-icon">💡</div>
+    <div>
+      <h3>You already know more than you think</h3>
+      <p>You know HTML, CSS, JavaScript and Python. That means you understand pages, styling, and talking to servers. React is just JavaScript written differently. Tailwind is just CSS with shortcuts. You've got this.</p>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-strip">
+    <span>Your Progress</span>
+    <div class="bar-wrap"><div class="bar-fill" id="progressBar"></div></div>
+    <div class="task-count"><span id="doneCount">0</span> / 5 tasks</div>
+  </div>
+
+  <!-- ===================== TASK 1 ===================== -->
+  <div class="task" data-task="1">
+    <div class="task-header" onclick="toggle(this)">
+      <div class="task-number">TASK 01</div>
+      <div class="task-title-wrap">
+        <div class="task-title">🔐 Login Page</div>
+        <div class="task-meta">
+          <span class="tag easy">Beginner Friendly</span>
+          <span class="tag html">HTML</span>
+          <span class="tag css">CSS</span>
+          <span class="tag js">JavaScript</span>
+        </div>
+      </div>
+      <div class="chevron">▾</div>
+    </div>
+    <div class="task-body">
+      <div class="divider"></div>
+
+      <div class="section-label">What is this?</div>
+      <p>The login page is the <strong>first thing every user sees</strong>. A doctor, nurse, patient or admin types their email and password, clicks login, and gets sent to their dashboard. Simple.</p>
+      <p>Behind the scenes: when the user clicks login, your JavaScript sends the email + password to your teammate's (Dev 2) server. The server checks if it's correct and sends back a <strong>token</strong> (think of it like a wristband at a concert — proof you paid to get in).</p>
+
+      <div class="section-label">New concept: What is a Token (JWT)?</div>
+      <div class="explain-box">
+        <p>A <strong>JWT (JSON Web Token)</strong> is just a long text string the server gives you after login. You save it, and every future request you make, you attach that string. The server reads it and knows who you are and what role you have. You never need to log in again until the token expires.</p>
+      </div>
+
+      <div class="section-label">New concept: fetch() — talking to the server</div>
+      <p>You use <code>fetch()</code> to send data to your teammate's server and get a response back. You probably already know this! Here's how login works:</p>
+      <div class="code-block">
+        <div class="code-label">login.js — Sending login data to the server</div>
+        <pre><span class="cm">// When user clicks the Login button, this function runs</span>
+<span class="kw">async function</span> <span class="fn">handleLogin</span>() {
+
+  <span class="cm">// Step 1: Get what the user typed</span>
+  <span class="kw">const</span> <span class="var">email</span> = document.<span class="fn">getElementById</span>(<span class="str">'email'</span>).value;
+  <span class="kw">const</span> <span class="var">password</span> = document.<span class="fn">getElementById</span>(<span class="str">'password'</span>).value;
+
+  <span class="cm">// Step 2: Send it to Dev 2's server</span>
+  <span class="kw">const</span> <span class="var">response</span> = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">'http://localhost:3000/login'</span>, {
+    method: <span class="str">'POST'</span>,                          <span class="cm">// POST = sending data</span>
+    headers: { <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span> },
+    body: <span class="fn">JSON.stringify</span>({ email, password }) <span class="cm">// convert to JSON text</span>
+  });
+
+  <span class="cm">// Step 3: Read the server's reply</span>
+  <span class="kw">const</span> <span class="var">data</span> = <span class="kw">await</span> <span class="var">response</span>.<span class="fn">json</span>();
+
+  <span class="cm">// Step 4: Save the token the server sent back</span>
+  <span class="fn">localStorage</span>.<span class="fn">setItem</span>(<span class="str">'token'</span>, data.token);   <span class="cm">// store it in browser</span>
+  <span class="fn">localStorage</span>.<span class="fn">setItem</span>(<span class="str">'role'</span>, data.role);     <span class="cm">// store the user's role too</span>
+
+  <span class="cm">// Step 5: Send user to the right dashboard</span>
+  <span class="kw">if</span> (data.role === <span class="str">'doctor'</span>) window.location.href = <span class="str">'/doctor-dashboard'</span>;
+  <span class="kw">if</span> (data.role === <span class="str">'patient'</span>) window.location.href = <span class="str">'/patient-dashboard'</span>;
+}</pre>
+      </div>
+
+      <div class="explain-box green">
+        <p>💾 <strong>localStorage</strong> is like a tiny storage box inside the browser. You save things there and they stay even if you refresh the page. That's where you keep the token.</p>
+      </div>
+
+      <div class="section-label">How to get started</div>
+      <ol class="steps">
+        <li><div><strong>Create a file called login.html</strong>Build a form with two inputs (email, password) and a button. Use your normal HTML skills.</div></li>
+        <li><div><strong>Style it with CSS</strong>Center the form on screen, make it look clean. Nothing fancy needed yet.</div></li>
+        <li><div><strong>Add the JavaScript</strong>Copy the fetch code above and connect it to your button's onclick event.</div></li>
+        <li><div><strong>Test with fake data first</strong>While Dev 2 is still building the server, use a fake response to test your page works.</div></li>
+      </ol>
+
+      <div class="code-block">
+        <div class="code-label">login.html — Basic structure</div>
+        <pre><span class="tag-c">&lt;div</span> <span class="attr">class</span>=<span class="str">"login-box"</span><span class="tag-c">&gt;</span>
+  <span class="tag-c">&lt;h2&gt;</span>Hospital Login<span class="tag-c">&lt;/h2&gt;</span>
+
+  <span class="tag-c">&lt;input</span> <span class="attr">type</span>=<span class="str">"email"</span> <span class="attr">id</span>=<span class="str">"email"</span> <span class="attr">placeholder</span>=<span class="str">"Email"</span> <span class="tag-c">/&gt;</span>
+  <span class="tag-c">&lt;input</span> <span class="attr">type</span>=<span class="str">"password"</span> <span class="attr">id</span>=<span class="str">"password"</span> <span class="attr">placeholder</span>=<span class="str">"Password"</span> <span class="tag-c">/&gt;</span>
+
+  <span class="tag-c">&lt;button</span> <span class="attr">onclick</span>=<span class="str">"handleLogin()"</span><span class="tag-c">&gt;</span>
+    Login
+  <span class="tag-c">&lt;/button&gt;</span>
+
+  <span class="tag-c">&lt;p</span> <span class="attr">id</span>=<span class="str">"error-msg"</span> <span class="attr">style</span>=<span class="str">"color:red; display:none"</span><span class="tag-c">&gt;</span>
+    Wrong email or password
+  <span class="tag-c">&lt;/p&gt;</span>
+<span class="tag-c">&lt;/div&gt;</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== TASK 2 ===================== -->
+  <div class="task" data-task="2">
+    <div class="task-header" onclick="toggle(this)">
+      <div class="task-number">TASK 02</div>
+      <div class="task-title-wrap">
+        <div class="task-title">🖥️ 4 Role-Based Dashboards</div>
+        <div class="task-meta">
+          <span class="tag medium">Intermediate</span>
+          <span class="tag react">React</span>
+          <span class="tag js">JavaScript</span>
+          <span class="tag css">Tailwind CSS</span>
+        </div>
+      </div>
+      <div class="chevron">▾</div>
+    </div>
+    <div class="task-body">
+      <div class="divider"></div>
+
+      <div class="section-label">What is this?</div>
+      <p>After login, every user gets a <strong>different dashboard</strong> based on their role. A patient sees their appointments. A doctor sees their patients. An admin sees everything. You build 4 separate pages.</p>
+
+      <div class="section-label">New concept: React — what is it really?</div>
+      <div class="explain-box">
+        <p><strong>React is just JavaScript with a superpower:</strong> instead of manually writing <code>document.getElementById</code> every time something changes on screen, React automatically updates the page when your data changes. You write HTML inside JavaScript using something called <strong>JSX</strong>.</p>
+      </div>
+
+      <div class="code-block">
+        <div class="code-label">Normal JavaScript vs React — same result, different style</div>
+        <pre><span class="cm">// ❌ Old way (vanilla JS) — manual and repetitive</span>
+<span class="kw">const</span> <span class="var">div</span> = document.<span class="fn">createElement</span>(<span class="str">'div'</span>);
+<span class="var">div</span>.innerHTML = <span class="str">'Hello, Doctor'</span>;
+document.body.<span class="fn">appendChild</span>(<span class="var">div</span>);
+
+<span class="cm">// ✅ React way — much cleaner, looks like HTML inside JS</span>
+<span class="kw">function</span> <span class="fn">DoctorDashboard</span>() {
+  <span class="kw">return</span> (
+    <span class="tag-c">&lt;div&gt;</span>Hello, Doctor<span class="tag-c">&lt;/div&gt;</span>   <span class="cm">// this HTML inside JS is called JSX</span>
+  );
+}</pre>
+      </div>
+
+      <div class="section-label">New concept: Tailwind CSS — shortcuts for styling</div>
+      <div class="explain-box yellow">
+        <p>Instead of writing a CSS file with classes, Tailwind lets you add style <strong>directly in your HTML/JSX</strong> using pre-made class names. Think of it like inline styles but cleaner and more powerful.</p>
+      </div>
+
+      <div class="code-block">
+        <div class="code-label">Normal CSS vs Tailwind — same style, two ways</div>
+        <pre><span class="cm">/* Normal CSS */</span>
+.<span class="fn">card</span> {
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+<span class="cm">/* Tailwind — no CSS file needed, just add classes */</span>
+<span class="tag-c">&lt;div</span> <span class="attr">className</span>=<span class="str">"bg-white p-4 rounded-lg shadow"</span><span class="tag-c">&gt;</span>
+  Card content here
+<span class="tag-c">&lt;/div&gt;</span></pre>
+      </div>
+
+      <div class="section-label">Building the Patient Dashboard (start here — simplest)</div>
+      <div class="code-block">
+        <div class="code-label">PatientDashboard.jsx — React component</div>
+        <pre><span class="kw">function</span> <span class="fn">PatientDashboard</span>() {
+
+  <span class="cm">// useState = a variable that, when it changes, re-renders the page</span>
+  <span class="kw">const</span> [appointments, setAppointments] = React.<span class="fn">useState</span>([]);
+
+  <span class="cm">// useEffect = runs once when the page loads</span>
+  React.<span class="fn">useEffect</span>(() => {
+    <span class="cm">// fetch appointments from Dev 4's server</span>
+    <span class="fn">fetch</span>(<span class="str">'/api/my-appointments'</span>, {
+      headers: { <span class="str">'Authorization'</span>: <span class="str">'Bearer '</span> + localStorage.<span class="fn">getItem</span>(<span class="str">'token'</span>) }
+    })
+    .<span class="fn">then</span>(res => res.<span class="fn">json</span>())
+    .<span class="fn">then</span>(data => <span class="fn">setAppointments</span>(data)); <span class="cm">// save to state</span>
+  }, []);
+
+  <span class="kw">return</span> (
+    <span class="tag-c">&lt;div</span> <span class="attr">className</span>=<span class="str">"p-8"</span><span class="tag-c">&gt;</span>
+      <span class="tag-c">&lt;h1</span> <span class="attr">className</span>=<span class="str">"text-2xl font-bold mb-4"</span><span class="tag-c">&gt;</span>My Appointments<span class="tag-c">&lt;/h1&gt;</span>
+
+      <span class="cm">{/* Loop through appointments and show each one */}</span>
+      {appointments.<span class="fn">map</span>(appt => (
+        <span class="tag-c">&lt;div</span> <span class="attr">key</span>={appt.id} <span class="attr">className</span>=<span class="str">"bg-white rounded-lg p-4 mb-2 shadow"</span><span class="tag-c">&gt;</span>
+          <span class="tag-c">&lt;p&gt;</span>Doctor: {appt.doctorName}<span class="tag-c">&lt;/p&gt;</span>
+          <span class="tag-c">&lt;p&gt;</span>Date: {appt.date}<span class="tag-c">&lt;/p&gt;</span>
+        <span class="tag-c">&lt;/div&gt;</span>
+      ))}
+    <span class="tag-c">&lt;/div&gt;</span>
+  );
+}</pre>
+      </div>
+
+      <div class="explain-box">
+        <p>📌 <strong>useState</strong> is like a normal variable BUT when you change it, the page automatically re-draws itself with the new value. <strong>useEffect</strong> is a function that runs automatically when the page first loads — perfect for fetching data.</p>
+      </div>
+
+      <div class="section-label">The 4 dashboards — what goes in each</div>
+      <ul>
+        <li><strong>Patient</strong> — My appointments, my medical history, my test results</li>
+        <li><strong>Doctor</strong> — List of their assigned patients, appointment schedule, ability to write notes, see AI predictions</li>
+        <li><strong>Nurse</strong> — Patients in their ward, ability to update patient status</li>
+        <li><strong>Admin</strong> — All users, all data, settings panel</li>
+      </ul>
+
+      <div class="section-label">How to get started</div>
+      <ol class="steps">
+        <li><div><strong>Install React</strong>Run: <code>npm create vite@latest my-app -- --template react</code> then <code>cd my-app && npm install && npm run dev</code> — this creates your React project.</div></li>
+        <li><div><strong>Create 4 files</strong>PatientDashboard.jsx, DoctorDashboard.jsx, NurseDashboard.jsx, AdminDashboard.jsx</div></li>
+        <li><div><strong>Use dummy data first</strong>Don't wait for the backend. Put fake appointments, fake patients in an array and display them. Replace with real fetch() calls later.</div></li>
+        <li><div><strong>Add routing</strong>Install React Router: <code>npm install react-router-dom</code> — this lets you navigate between pages.</div></li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- ===================== TASK 3 ===================== -->
+  <div class="task" data-task="3">
+    <div class="task-header" onclick="toggle(this)">
+      <div class="task-number">TASK 03</div>
+      <div class="task-title-wrap">
+        <div class="task-title">💬 AI Chatbot UI</div>
+        <div class="task-meta">
+          <span class="tag medium">Intermediate</span>
+          <span class="tag react">React</span>
+          <span class="tag js">JavaScript</span>
+        </div>
+      </div>
+      <div class="chevron">▾</div>
+    </div>
+    <div class="task-body">
+      <div class="divider"></div>
+
+      <div class="section-label">What is this?</div>
+      <p>A chat window — just like WhatsApp or ChatGPT. The user types a message, hits send, and the AI (Dev 3's server) replies. You are <strong>only building the visual interface</strong>. The actual AI brain lives on Dev 3's server. You just send the message and display the reply.</p>
+
+      <div class="section-label">How the data flows</div>
+      <div class="explain-box">
+        <p>User types → You send message to Dev 3's server → Server sends back AI reply → You display it in the chat window. That's the entire flow. Your part is steps 1 and 4.</p>
+      </div>
+
+      <div class="code-block">
+        <div class="code-label">Chatbot.jsx — Full working chat component</div>
+        <pre><span class="kw">function</span> <span class="fn">Chatbot</span>() {
+  <span class="kw">const</span> [messages, setMessages] = React.<span class="fn">useState</span>([
+    { role: <span class="str">'bot'</span>, text: <span class="str">'Hello! How can I help you today?'</span> }
+  ]);
+  <span class="kw">const</span> [input, setInput] = React.<span class="fn">useState</span>(<span class="str">''</span>);
+  <span class="kw">const</span> [loading, setLoading] = React.<span class="fn">useState</span>(<span class="kw">false</span>);
+
+  <span class="kw">async function</span> <span class="fn">sendMessage</span>() {
+    <span class="kw">if</span> (!input.<span class="fn">trim</span>()) <span class="kw">return</span>; <span class="cm">// don't send empty messages</span>
+
+    <span class="cm">// 1. Add user's message to chat immediately</span>
+    <span class="kw">const</span> <span class="var">userMsg</span> = { role: <span class="str">'user'</span>, text: input };
+    <span class="fn">setMessages</span>(prev => [...prev, userMsg]);
+    <span class="fn">setInput</span>(<span class="str">''</span>);
+    <span class="fn">setLoading</span>(<span class="kw">true</span>);
+
+    <span class="cm">// 2. Send to Dev 3's AI server</span>
+    <span class="kw">const</span> <span class="var">res</span> = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">'/api/ai/chat'</span>, {
+      method: <span class="str">'POST'</span>,
+      headers: { <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span> },
+      body: <span class="fn">JSON.stringify</span>({ message: input })
+    });
+    <span class="kw">const</span> <span class="var">data</span> = <span class="kw">await</span> <span class="var">res</span>.<span class="fn">json</span>();
+
+    <span class="cm">// 3. Add bot reply to chat</span>
+    <span class="fn">setMessages</span>(prev => [...prev, { role: <span class="str">'bot'</span>, text: data.reply }]);
+    <span class="fn">setLoading</span>(<span class="kw">false</span>);
+  }
+
+  <span class="kw">return</span> (
+    <span class="tag-c">&lt;div</span> <span class="attr">className</span>=<span class="str">"flex flex-col h-screen max-w-lg mx-auto"</span><span class="tag-c">&gt;</span>
+
+      <span class="cm">{/* Message list */}</span>
+      <span class="tag-c">&lt;div</span> <span class="attr">className</span>=<span class="str">"flex-1 overflow-y-auto p-4 space-y-3"</span><span class="tag-c">&gt;</span>
+        {messages.<span class="fn">map</span>((msg, i) => (
+          <span class="tag-c">&lt;div</span> <span class="attr">key</span>={i}
+            <span class="attr">className</span>={msg.role === <span class="str">'user'</span>
+              ? <span class="str">'ml-auto bg-blue-500 text-white rounded-2xl p-3 max-w-xs'</span>
+              : <span class="str">'mr-auto bg-gray-200 rounded-2xl p-3 max-w-xs'</span>
+            }>
+            {msg.text}
+          <span class="tag-c">&lt;/div&gt;</span>
+        ))}
+        {loading &amp;&amp; <span class="tag-c">&lt;div</span> <span class="attr">className</span>=<span class="str">"mr-auto bg-gray-200 rounded-2xl p-3"</span><span class="tag-c">&gt;</span>Typing...<span class="tag-c">&lt;/div&gt;</span>}
+      <span class="tag-c">&lt;/div&gt;</span>
+
+      <span class="cm">{/* Input bar */}</span>
+      <span class="tag-c">&lt;div</span> <span class="attr">className</span>=<span class="str">"flex gap-2 p-4 border-t"</span><span class="tag-c">&gt;</span>
+        <span class="tag-c">&lt;input</span>
+          <span class="attr">value</span>={input}
+          <span class="attr">onChange</span>={e => <span class="fn">setInput</span>(e.target.value)}
+          <span class="attr">onKeyDown</span>={e => e.key === <span class="str">'Enter'</span> &amp;&amp; <span class="fn">sendMessage</span>()}
+          <span class="attr">className</span>=<span class="str">"flex-1 border rounded-full px-4 py-2"</span>
+          <span class="attr">placeholder</span>=<span class="str">"Type a message..."</span>
+        <span class="tag-c">/&gt;</span>
+        <span class="tag-c">&lt;button</span> <span class="attr">onClick</span>={sendMessage} <span class="attr">className</span>=<span class="str">"bg-blue-500 text-white rounded-full px-4 py-2"</span><span class="tag-c">&gt;</span>
+          Send
+        <span class="tag-c">&lt;/button&gt;</span>
+      <span class="tag-c">&lt;/div&gt;</span>
+    <span class="tag-c">&lt;/div&gt;</span>
+  );
+}</pre>
+      </div>
+
+      <div class="explain-box">
+        <p>🔑 Key trick: <code>[...prev, newMessage]</code> means "take the old list of messages and add a new one to the end." The <code>...</code> is called the <strong>spread operator</strong> — it copies everything from the existing array.</p>
+      </div>
+
+      <div class="section-label">How to get started</div>
+      <ol class="steps">
+        <li><div><strong>Build the layout first</strong>Create the chat bubble design with dummy messages hardcoded in an array. Just focus on making it look like WhatsApp.</div></li>
+        <li><div><strong>Add the input bar</strong>A text input and a Send button at the bottom.</div></li>
+        <li><div><strong>Wire up the state</strong>Use useState to store messages. When user clicks send, add their message to the array and clear the input.</div></li>
+        <li><div><strong>Add the fetch call</strong>Once Dev 3 has the AI endpoint ready, replace the dummy reply with a real fetch() call.</div></li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- ===================== TASK 4 ===================== -->
+  <div class="task" data-task="4">
+    <div class="task-header" onclick="toggle(this)">
+      <div class="task-number">TASK 04</div>
+      <div class="task-title-wrap">
+        <div class="task-title">🔔 Live Notifications</div>
+        <div class="task-meta">
+          <span class="tag hard">Advanced</span>
+          <span class="tag js">JavaScript</span>
+          <span class="tag react">React</span>
+        </div>
+      </div>
+      <div class="chevron">▾</div>
+    </div>
+    <div class="task-body">
+      <div class="divider"></div>
+
+      <div class="section-label">What is this?</div>
+      <p>When something happens (like a doctor confirms an appointment), the patient's screen shows a notification <strong>instantly without refreshing</strong>. This is the live/realtime feature. It's handled by Dev 4's Realtime Service — you just connect to it and listen for events.</p>
+
+      <div class="section-label">New concept: WebSockets — a permanent phone call</div>
+      <div class="explain-box">
+        <p>Normal <code>fetch()</code> is like sending a letter: you send a request, wait, get one reply, done. <strong>WebSockets are like a phone call</strong>: once connected, both sides can send messages back and forth anytime, instantly. You use a library called <strong>Socket.IO</strong> to make this easy.</p>
+      </div>
+
+      <div class="code-block">
+        <div class="code-label">Notifications.jsx — connecting to the live server</div>
+        <pre><span class="kw">import</span> io <span class="kw">from</span> <span class="str">'socket.io-client'</span>; <span class="cm">// npm install socket.io-client</span>
+
+<span class="kw">function</span> <span class="fn">Notifications</span>() {
+  <span class="kw">const</span> [notifs, setNotifs] = React.<span class="fn">useState</span>([]);
+
+  React.<span class="fn">useEffect</span>(() => {
+    <span class="cm">// 1. Connect to Dev 4's realtime server</span>
+    <span class="kw">const</span> <span class="var">socket</span> = <span class="fn">io</span>(<span class="str">'http://localhost:4000'</span>);
+
+    <span class="cm">// 2. Listen for 'notification' events from the server</span>
+    socket.<span class="fn">on</span>(<span class="str">'notification'</span>, (message) => {
+      <span class="cm">// 3. When a notification arrives, add it to your list</span>
+      <span class="fn">setNotifs</span>(prev => [message, ...prev]);
+    });
+
+    <span class="cm">// 4. Disconnect when component is removed from screen</span>
+    <span class="kw">return</span> () => socket.<span class="fn">disconnect</span>();
+  }, []);
+
+  <span class="kw">return</span> (
+    <span class="tag-c">&lt;div&gt;</span>
+      <span class="tag-c">&lt;h3&gt;</span>Notifications ({notifs.length})<span class="tag-c">&lt;/h3&gt;</span>
+      {notifs.<span class="fn">map</span>((n, i) => (
+        <span class="tag-c">&lt;div</span> <span class="attr">key</span>={i} <span class="attr">className</span>=<span class="str">"bg-blue-50 border-l-4 border-blue-500 p-3 mb-2"</span><span class="tag-c">&gt;</span>
+          {n.message}
+        <span class="tag-c">&lt;/div&gt;</span>
+      ))}
+    <span class="tag-c">&lt;/div&gt;</span>
+  );
+}</pre>
+      </div>
+
+      <div class="explain-box green">
+        <p>✅ Your role here is simple: install socket.io-client, connect to Dev 4's server, listen for events, and show them on screen. Dev 4 handles all the complex server-side logic.</p>
+      </div>
+
+      <div class="section-label">How to get started</div>
+      <ol class="steps">
+        <li><div><strong>Install Socket.IO client</strong>Run: <code>npm install socket.io-client</code> in your project folder.</div></li>
+        <li><div><strong>Build the notification bell icon</strong>In your navbar, add a bell icon with a red number badge showing the count of unread notifications.</div></li>
+        <li><div><strong>Create the dropdown list</strong>When bell is clicked, show a dropdown with all notifications.</div></li>
+        <li><div><strong>Connect to Dev 4's server</strong>Once they have it running, replace the test URL with their real server address.</div></li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- ===================== TASK 5 ===================== -->
+  <div class="task" data-task="5">
+    <div class="task-header" onclick="toggle(this)">
+      <div class="task-number">TASK 05</div>
+      <div class="task-title-wrap">
+        <div class="task-title">🤒 Symptom Checker Page</div>
+        <div class="task-meta">
+          <span class="tag medium">Intermediate</span>
+          <span class="tag react">React</span>
+          <span class="tag js">JavaScript</span>
+        </div>
+      </div>
+      <div class="chevron">▾</div>
+    </div>
+    <div class="task-body">
+      <div class="divider"></div>
+
+      <div class="section-label">What is this?</div>
+      <p>A page where patients describe their symptoms in a text box, click Submit, and get back a list of <strong>possible diagnoses</strong> suggested by the AI. The AI logic all lives on Dev 3's server. You just build the form and display the results nicely.</p>
+
+      <div class="code-block">
+        <div class="code-label">SymptomChecker.jsx — Full component</div>
+        <pre><span class="kw">function</span> <span class="fn">SymptomChecker</span>() {
+  <span class="kw">const</span> [symptoms, setSymptoms] = React.<span class="fn">useState</span>(<span class="str">''</span>);
+  <span class="kw">const</span> [results, setResults] = React.<span class="fn">useState</span>(<span class="kw">null</span>);
+  <span class="kw">const</span> [loading, setLoading] = React.<span class="fn">useState</span>(<span class="kw">false</span>);
+
+  <span class="kw">async function</span> <span class="fn">checkSymptoms</span>() {
+    <span class="fn">setLoading</span>(<span class="kw">true</span>);
+    <span class="fn">setResults</span>(<span class="kw">null</span>);
+
+    <span class="kw">const</span> <span class="var">res</span> = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">'/api/ai/symptom-check'</span>, {
+      method: <span class="str">'POST'</span>,
+      headers: { <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span> },
+      body: <span class="fn">JSON.stringify</span>({ symptoms })
+    });
+    <span class="kw">const</span> <span class="var">data</span> = <span class="kw">await</span> <span class="var">res</span>.<span class="fn">json</span>();
+    <span class="fn">setResults</span>(data.diagnoses); <span class="cm">// array of possible conditions</span>
+    <span class="fn">setLoading</span>(<span class="kw">false</span>);
+  }
+
+  <span class="kw">return</span> (
+    <span class="tag-c">&lt;div</span> <span class="attr">className</span>=<span class="str">"max-w-xl mx-auto p-8"</span><span class="tag-c">&gt;</span>
+      <span class="tag-c">&lt;h1</span> <span class="attr">className</span>=<span class="str">"text-2xl font-bold mb-2"</span><span class="tag-c">&gt;</span>Symptom Checker<span class="tag-c">&lt;/h1&gt;</span>
+      <span class="tag-c">&lt;p</span> <span class="attr">className</span>=<span class="str">"text-gray-500 mb-6"</span><span class="tag-c">&gt;</span>Describe how you feel and we'll suggest possible conditions.<span class="tag-c">&lt;/p&gt;</span>
+
+      <span class="tag-c">&lt;textarea</span>
+        <span class="attr">value</span>={symptoms}
+        <span class="attr">onChange</span>={e => <span class="fn">setSymptoms</span>(e.target.value)}
+        <span class="attr">placeholder</span>=<span class="str">"e.g. I have a headache, fever, and sore throat..."</span>
+        <span class="attr">className</span>=<span class="str">"w-full border rounded-lg p-4 h-32 mb-4"</span>
+      <span class="tag-c">/&gt;</span>
+
+      <span class="tag-c">&lt;button</span> <span class="attr">onClick</span>={checkSymptoms} <span class="attr">disabled</span>={loading}
+        <span class="attr">className</span>=<span class="str">"w-full bg-blue-600 text-white py-3 rounded-lg font-semibold"</span><span class="tag-c">&gt;</span>
+        {loading ? <span class="str">'Analyzing...'</span> : <span class="str">'Check Symptoms'</span>}
+      <span class="tag-c">&lt;/button&gt;</span>
+
+      <span class="cm">{/* Results appear below after submission */}</span>
+      {results &amp;&amp; (
+        <span class="tag-c">&lt;div</span> <span class="attr">className</span>=<span class="str">"mt-8"</span><span class="tag-c">&gt;</span>
+          <span class="tag-c">&lt;h2</span> <span class="attr">className</span>=<span class="str">"font-bold text-lg mb-3"</span><span class="tag-c">&gt;</span>Possible Conditions<span class="tag-c">&lt;/h2&gt;</span>
+          {results.<span class="fn">map</span>((item, i) => (
+            <span class="tag-c">&lt;div</span> <span class="attr">key</span>={i} <span class="attr">className</span>=<span class="str">"bg-white border rounded-lg p-4 mb-2 shadow-sm"</span><span class="tag-c">&gt;</span>
+              <span class="tag-c">&lt;p</span> <span class="attr">className</span>=<span class="str">"font-semibold"</span><span class="tag-c">&gt;</span>{item.condition}<span class="tag-c">&lt;/p&gt;</span>
+              <span class="tag-c">&lt;p</span> <span class="attr">className</span>=<span class="str">"text-gray-500 text-sm"</span><span class="tag-c">&gt;</span>{item.description}<span class="tag-c">&lt;/p&gt;</span>
+            <span class="tag-c">&lt;/div&gt;</span>
+          ))}
+          <span class="tag-c">&lt;p</span> <span class="attr">className</span>=<span class="str">"text-xs text-gray-400 mt-4"</span><span class="tag-c">&gt;</span>
+            ⚠️ This is not medical advice. Always consult a real doctor.
+          <span class="tag-c">&lt;/p&gt;</span>
+        <span class="tag-c">&lt;/div&gt;</span>
+      )}
+    <span class="tag-c">&lt;/div&gt;</span>
+  );
+}</pre>
+      </div>
+
+      <div class="section-label">The 3 states your UI needs to handle</div>
+      <ul>
+        <li><strong>Default state</strong> — Show the form, empty text area, button enabled</li>
+        <li><strong>Loading state</strong> — Button says "Analyzing...", maybe a spinner, results hidden</li>
+        <li><strong>Results state</strong> — Show the list of diagnoses returned by the AI</li>
+      </ul>
+
+      <div class="section-label">How to get started</div>
+      <ol class="steps">
+        <li><div><strong>Build the form</strong>A textarea and a Submit button. Style it cleanly.</div></li>
+        <li><div><strong>Test with fake results</strong>Create a dummy array of diagnoses and display them below the form. Make it look good before wiring up the real API.</div></li>
+        <li><div><strong>Add the loading state</strong>When button is clicked, show "Analyzing..." and hide the results until done.</div></li>
+        <li><div><strong>Connect to Dev 3's endpoint</strong>When they have the AI ready, swap in the real fetch() call.</div></li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="tip-banner" style="text-align:left; margin-top: 20px;">
+      <div class="tip-icon">🚀</div>
+      <div>
+        <h3>Your learning path in order</h3>
+        <p>1. Learn React basics (1 week) → 2. Build Login Page → 3. Build Patient Dashboard with dummy data → 4. Build Doctor Dashboard → 5. Add Chatbot → 6. Add Symptom Checker → 7. Add Notifications last. Go one step at a time.</p>
+      </div>
+    </div>
+    <p style="margin-top: 20px;">Built for Hospital Management System Project — Dev 1 Frontend</p>
+  </footer>
+
+</div>
+
+<script>
+  function toggle(header) {
+    const task = header.parentElement;
+    task.classList.toggle('open');
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const total = document.querySelectorAll('.task').length;
+    const open = document.querySelectorAll('.task.open').length;
+    document.getElementById('doneCount').textContent = open;
+    document.getElementById('progressBar').style.width = (open / total * 100) + '%';
+  }
+
+  // Animate progress bar on load
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.getElementById('progressBar').style.width = '0%';
+    }, 100);
+  });
+</script>
+</body>
+</html>
