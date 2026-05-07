@@ -51,44 +51,44 @@ const GLOBAL_CSS = `
 
 /* ─── DATA ─── */
 const NAV = [
-  { id: "dashboard",   label: "Dashboard",       icon: "home" },
-  { id: "patients",    label: "My Patients",     icon: "users" },
-  { id: "appointments",label: "Appointments",    icon: "calendar" },
-  { id: "records",     label: "Medical Records", icon: "file" },
-  { id: "lab",         label: "Lab Results",     icon: "flask" },
-  { id: "prescriptions",label: "Prescriptions", icon: "pill" },
-  { id: "messages",    label: "Messages",        icon: "chat",   badge: 4 },
-  { id: "analytics",   label: "Analytics",       icon: "chart" },
-  { id: "settings",    label: "Settings",        icon: "cog" },
+  { id: "dashboard",    label: "Dashboard",        icon: "home" },
+  { id: "patients",     label: "My Patients",      icon: "users" },
+  { id: "appointments", label: "Appointments",     icon: "calendar" },
+  { id: "records",      label: "Medical Records",  icon: "file" },
+  { id: "lab",          label: "Lab Results",      icon: "flask" },
+  { id: "prescriptions",label: "Prescriptions",    icon: "pill" },
+  { id: "messages",     label: "Messages",         icon: "chat",  badge: 4 },
+  { id: "analytics",    label: "Analytics",        icon: "chart" },
+  { id: "settings",     label: "Settings",         icon: "cog" },
 ];
 
 const STATS = [
-  { label: "Patients Today",   value: "12", sub: "3 remaining",       trend: "+2 vs yesterday",  up: true,  color: "#2563eb", bg: "#eff6ff", icon: "users" },
-  { label: "Appointments",     value: "6",  sub: "Next at 10:00 AM",  trend: "On schedule",      up: null,  color: "#0d9488", bg: "#f0fdfa", icon: "calendar" },
-  { label: "Pending Lab Alerts",value: "3", sub: "2 critical",        trend: "Action needed",    up: false, color: "#e11d48", bg: "#fff1f2", icon: "flask" },
-  { label: "Surgeries",        value: "1",  sub: "Scheduled 3:00 PM", trend: "Team confirmed",   up: null,  color: "#7c3aed", bg: "#f5f3ff", icon: "surgery" },
+  { label: "Patients Today",    value: "12", sub: "3 remaining",       trend: "+2 vs yesterday", up: true,  color: "#2563eb", bg: "#eff6ff", icon: "users" },
+  { label: "Appointments",      value: "6",  sub: "Next at 10:00 AM",  trend: "On schedule",     up: null,  color: "#0d9488", bg: "#f0fdfa", icon: "calendar" },
+  { label: "Pending Lab Alerts",value: "3",  sub: "2 critical",        trend: "Action needed",   up: false, color: "#e11d48", bg: "#fff1f2", icon: "flask" },
+  { label: "Surgeries",         value: "1",  sub: "Scheduled 3:00 PM", trend: "Team confirmed",  up: null,  color: "#7c3aed", bg: "#f5f3ff", icon: "surgery" },
 ];
 
 const APPOINTMENTS = [
-  { time: "08:30", name: "Sarah Mitchell",   age: 34, type: "Follow-up",          status: "Completed",   avatar: "SM", hue: "#d1fae5", text: "#065f46", room: "A-102" },
-  { time: "09:15", name: "James Okafor",     age: 52, type: "Cardiology Consult", status: "In Progress", avatar: "JO", hue: "#dbeafe", text: "#1e40af", room: "B-207" },
-  { time: "10:00", name: "Fatima Al-Rashid", age: 29, type: "Prenatal Check",     status: "Waiting",     avatar: "FA", hue: "#ede9fe", text: "#5b21b6", room: "C-301" },
-  { time: "11:30", name: "Marcus Chen",      age: 67, type: "Post-op Review",     status: "Waiting",     avatar: "MC", hue: "#fef3c7", text: "#92400e", room: "A-115" },
-  { time: "13:00", name: "Elena Vasquez",    age: 41, type: "General Checkup",    status: "Scheduled",   avatar: "EV", hue: "#ffe4e6", text: "#9f1239", room: "B-204" },
-  { time: "14:30", name: "David Nkomo",      age: 58, type: "Diabetes Management",status: "Scheduled",   avatar: "DN", hue: "#ccfbf1", text: "#134e4a", room: "C-310" },
+  { time: "08:30", name: "Sarah Mitchell",   age: 34, type: "Follow-up",           status: "Completed",   avatar: "SM", hue: "#d1fae5", text: "#065f46", room: "A-102" },
+  { time: "09:15", name: "James Okafor",     age: 52, type: "Cardiology Consult",  status: "In Progress", avatar: "JO", hue: "#dbeafe", text: "#1e40af", room: "B-207" },
+  { time: "10:00", name: "Fatima Al-Rashid", age: 29, type: "Prenatal Check",      status: "Waiting",     avatar: "FA", hue: "#ede9fe", text: "#5b21b6", room: "C-301" },
+  { time: "11:30", name: "Marcus Chen",      age: 67, type: "Post-op Review",      status: "Waiting",     avatar: "MC", hue: "#fef3c7", text: "#92400e", room: "A-115" },
+  { time: "13:00", name: "Elena Vasquez",    age: 41, type: "General Checkup",     status: "Scheduled",   avatar: "EV", hue: "#ffe4e6", text: "#9f1239", room: "B-204" },
+  { time: "14:30", name: "David Nkomo",      age: 58, type: "Diabetes Management", status: "Scheduled",   avatar: "DN", hue: "#ccfbf1", text: "#134e4a", room: "C-310" },
 ];
 
 const LAB_ALERTS = [
-  { patient: "James Okafor",  test: "Troponin levels",    finding: "Elevated — Cardiac risk", urgency: "Critical", time: "12m ago", action: "View Report" },
-  { patient: "Marcus Chen",   test: "WBC Count",          finding: "Abnormal — Infection suspected", urgency: "High", time: "1h ago",  action: "View Report" },
-  { patient: "Aisha Bello",   test: "HbA1c",              finding: "7.9% — Review needed",    urgency: "Moderate", time: "3h ago",  action: "View Report" },
+  { patient: "James Okafor", test: "Troponin levels", finding: "Elevated — Cardiac risk",        urgency: "Critical", time: "12m ago", action: "View Report" },
+  { patient: "Marcus Chen",  test: "WBC Count",       finding: "Abnormal — Infection suspected", urgency: "High",     time: "1h ago",  action: "View Report" },
+  { patient: "Aisha Bello",  test: "HbA1c",           finding: "7.9% — Review needed",           urgency: "Moderate", time: "3h ago",  action: "View Report" },
 ];
 
 const MESSAGES = [
-  { from: "Dr. Lena Park",      role: "Radiologist",        msg: "CT scan for Chen is ready for review.", time: "9:04 AM",  unread: true,  avatar: "LP", color: "#dbeafe" },
-  { from: "Nurse Aida Torres",  role: "Ward 4B",            msg: "James Okafor is asking about discharge.", time: "8:47 AM", unread: true,  avatar: "AT", color: "#d1fae5" },
-  { from: "Dr. Kwame Mensah",   role: "Internal Medicine",  msg: "Can you co-sign the referral for Vasquez?", time: "8:12 AM", unread: false, avatar: "KM", color: "#f5f3ff" },
-  { from: "Reception",          role: "Admin",              msg: "New patient file uploaded — Yuki Tanaka.", time: "7:58 AM", unread: false, avatar: "RX", color: "#fef3c7" },
+  { from: "Dr. Lena Park",     role: "Radiologist",       msg: "CT scan for Chen is ready for review.",       time: "9:04 AM", unread: true,  avatar: "LP", color: "#dbeafe" },
+  { from: "Nurse Aida Torres", role: "Ward 4B",            msg: "James Okafor is asking about discharge.",     time: "8:47 AM", unread: true,  avatar: "AT", color: "#d1fae5" },
+  { from: "Dr. Kwame Mensah",  role: "Internal Medicine",  msg: "Can you co-sign the referral for Vasquez?",   time: "8:12 AM", unread: false, avatar: "KM", color: "#f5f3ff" },
+  { from: "Reception",         role: "Admin",              msg: "New patient file uploaded — Yuki Tanaka.",    time: "7:58 AM", unread: false, avatar: "RX", color: "#fef3c7" },
 ];
 
 const TASKS = [
@@ -117,44 +117,43 @@ const WARD_BEDS = [
 ];
 
 const RECENT_ACTIVITY = [
-  { text: "Prescription issued for David Nkomo (Metformin 500mg)", time: "10:22 AM", type: "rx" },
-  { text: "Lab order placed — Complete blood panel (Marcus Chen)", time: "9:58 AM",  type: "lab" },
-  { text: "Appointment rescheduled — Elena Vasquez to 1:00 PM",   time: "9:31 AM",  type: "apt" },
-  { text: "Referral sent to Dr. Park — Cardiology (James Okafor)", time: "8:55 AM", type: "ref" },
-  { text: "Medical record updated — Fatima Al-Rashid",            time: "8:40 AM",  type: "rec" },
+  { text: "Prescription issued for David Nkomo (Metformin 500mg)",      time: "10:22 AM", type: "rx" },
+  { text: "Lab order placed — Complete blood panel (Marcus Chen)",       time: "9:58 AM",  type: "lab" },
+  { text: "Appointment rescheduled — Elena Vasquez to 1:00 PM",         time: "9:31 AM",  type: "apt" },
+  { text: "Referral sent to Dr. Park — Cardiology (James Okafor)",      time: "8:55 AM",  type: "ref" },
+  { text: "Medical record updated — Fatima Al-Rashid",                  time: "8:40 AM",  type: "rec" },
 ];
 
 const ONCALL = [
-  { name: "Dr. Sofia Reyes",  spec: "Emergency",      status: "On duty",  avatar: "SR" },
-  { name: "Dr. Omar Faris",   spec: "Anesthesiology", status: "Standby",  avatar: "OF" },
+  { name: "Dr. Sofia Reyes", spec: "Emergency",    status: "On duty", avatar: "SR" },
+  { name: "Dr. Omar Faris",  spec: "Anesthesiology",status: "Standby", avatar: "OF" },
 ];
 
 /* ─── ICON HELPER ─── */
 function Icon({ name, size = 18, color = "currentColor", strokeWidth = 1.8 }) {
   const paths = {
-    home: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6",
-    users: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z",
-    calendar: "M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z",
-    file: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z",
-    flask: "M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z",
-    pill: "M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18",
-    chat: "M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z",
-    chart: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z",
-    cog: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z",
-    surgery: "M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4",
-    bell: "M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9",
-    search: "M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z",
-    chevron: "M9 5l7 7-7 7",
+    home:        "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6",
+    users:       "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z",
+    calendar:    "M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z",
+    file:        "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z",
+    flask:       "M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z",
+    pill:        "M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18",
+    chat:        "M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z",
+    chart:       "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z",
+    cog:         "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z",
+    surgery:     "M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4",
+    bell:        "M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9",
+    search:      "M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z",
+    chevron:     "M9 5l7 7-7 7",
     chevronDown: "M19 9l-7 7-7-7",
-    plus: "M12 4v16m8-8H4",
-    check: "M5 13l4 4L19 7",
-    arrowUp: "M5 15l7-7 7 7",
-    arrowDown: "M19 9l-7 7-7-7",
-    menu: "M4 6h16M4 12h16M4 18h16",
-    fold: "M11 19l-7-7 7-7m8 14l-7-7 7-7",
-    logout: "M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1",
-    bed: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6",
-    activity: "M22 12h-4l-3 9L9 3l-3 9H2",
+    plus:        "M12 4v16m8-8H4",
+    check:       "M5 13l4 4L19 7",
+    arrowUp:     "M5 15l7-7 7 7",
+    arrowDown:   "M19 9l-7 7-7-7",
+    menu:        "M4 6h16M4 12h16M4 18h16",
+    fold:        "M11 19l-7-7 7-7m8 14l-7-7 7-7",
+    logout:      "M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1",
+    activity:    "M22 12h-4l-3 9L9 3l-3 9H2",
   };
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
@@ -165,7 +164,7 @@ function Icon({ name, size = 18, color = "currentColor", strokeWidth = 1.8 }) {
   );
 }
 
-/* ─── STATUS / URGENCY HELPERS ─── */
+/* ─── STATUS / URGENCY CONFIG ─── */
 const STATUS_CONFIG = {
   "Completed":   { bg: "#d1fae5", text: "#065f46", dot: "#10b981" },
   "In Progress": { bg: "#dbeafe", text: "#1e40af", dot: "#3b82f6" },
@@ -183,19 +182,19 @@ const PRIORITY_CONFIG = {
   "Low":    { bg: "#f0fdf4", text: "#166534" },
 };
 const ACTIVITY_ICONS = {
-  rx: { icon: "pill",     color: "#7c3aed", bg: "#f5f3ff" },
-  lab: { icon: "flask",   color: "#0d9488", bg: "#f0fdfa" },
-  apt: { icon: "calendar",color: "#2563eb", bg: "#eff6ff" },
-  ref: { icon: "users",   color: "#d97706", bg: "#fffbeb" },
-  rec: { icon: "file",    color: "#64748b", bg: "#f1f5f9" },
+  rx:  { icon: "pill",     color: "#7c3aed", bg: "#f5f3ff" },
+  lab: { icon: "flask",    color: "#0d9488", bg: "#f0fdfa" },
+  apt: { icon: "calendar", color: "#2563eb", bg: "#eff6ff" },
+  ref: { icon: "users",    color: "#d97706", bg: "#fffbeb" },
+  rec: { icon: "file",     color: "#64748b", bg: "#f1f5f9" },
 };
 
-/* ─── MINI COMPONENTS ─── */
-function SectionHeader({ title, sub, action, actionLabel }) {
+/* ─── SECTION HEADER ─── */
+function SectionHeader({ title, sub, actionLabel, action }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 20px", borderBottom: "1px solid #f1f5f9" }}>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 20px", borderBottom: "1px solid #f1f5f9", flexShrink: 0 }}>
       <div>
-        <p style={{ fontWeight: 700, fontSize: 14, color: "#0f172a", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{title}</p>
+        <p style={{ fontWeight: 700, fontSize: 14, color: "#0f172a" }}>{title}</p>
         {sub && <p style={{ fontSize: 12, color: "#94a3b8", marginTop: 2 }}>{sub}</p>}
       </div>
       {actionLabel && (
@@ -210,16 +209,21 @@ function SectionHeader({ title, sub, action, actionLabel }) {
 /* ─── SIDEBAR ─── */
 function Sidebar({ active, setActive, open, setOpen }) {
   return (
-    <aside className="sidebar-trans" style={{
-      width: open ? 240 : 72,
-      flexShrink: 0,
-      background: "linear-gradient(180deg, #0b1f3a 0%, #0d2748 100%)",
-      display: "flex",
-      flexDirection: "column",
-      height: "100%",
-      position: "relative",
-      zIndex: 10,
-    }}>
+    <aside
+      className="sidebar-trans"
+      style={{
+        width: open ? 240 : 72,
+        flexShrink: 0,
+        background: "linear-gradient(180deg, #0b1f3a 0%, #0d2748 100%)",
+        display: "flex",
+        flexDirection: "column",
+        /* FIX: height:100% fills the flex parent; overflow:hidden prevents bleed */
+        height: "100%",
+        overflow: "hidden",
+        position: "relative",
+        zIndex: 10,
+      }}
+    >
       {/* Logo */}
       <div style={{ height: 64, display: "flex", alignItems: "center", padding: "0 16px", borderBottom: "1px solid rgba(255,255,255,0.06)", flexShrink: 0 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, overflow: "hidden" }}>
@@ -239,8 +243,8 @@ function Sidebar({ active, setActive, open, setOpen }) {
         )}
       </div>
 
-      {/* Nav */}
-      <nav style={{ flex: 1, padding: "12px 8px", overflowY: "auto", display: "flex", flexDirection: "column", gap: 2 }}>
+      {/* Nav — flex:1 + minHeight:0 lets it shrink and scroll */}
+      <nav style={{ flex: 1, minHeight: 0, padding: "12px 8px", overflowY: "auto", display: "flex", flexDirection: "column", gap: 2 }}>
         {!open && (
           <button onClick={() => setOpen(true)} className="nav-btn" style={{ display: "flex", justifyContent: "center", padding: "10px", borderRadius: 10, marginBottom: 4, color: "rgba(255,255,255,0.4)" }}>
             <Icon name="menu" size={20} color="rgba(255,255,255,0.4)" />
@@ -249,11 +253,19 @@ function Sidebar({ active, setActive, open, setOpen }) {
         {NAV.map(item => {
           const isActive = active === item.id;
           return (
-            <button key={item.id} onClick={() => setActive(item.id)} className="nav-btn"
-              style={{ display: "flex", alignItems: "center", gap: 10, padding: open ? "10px 12px" : "10px", borderRadius: 10, width: "100%", justifyContent: open ? "flex-start" : "center",
+            <button
+              key={item.id}
+              onClick={() => setActive(item.id)}
+              className="nav-btn"
+              style={{
+                display: "flex", alignItems: "center", gap: 10,
+                padding: open ? "10px 12px" : "10px",
+                borderRadius: 10, width: "100%",
+                justifyContent: open ? "flex-start" : "center",
                 background: isActive ? "rgba(13,148,136,0.18)" : "transparent",
                 color: isActive ? "#2dd4bf" : "rgba(255,255,255,0.42)",
-              }}>
+              }}
+            >
               <div style={{ flexShrink: 0, position: "relative" }}>
                 <Icon name={item.icon} size={19} color={isActive ? "#2dd4bf" : "rgba(255,255,255,0.42)"} strokeWidth={isActive ? 2.2 : 1.8} />
                 {item.badge && !open && (
@@ -262,13 +274,15 @@ function Sidebar({ active, setActive, open, setOpen }) {
                   </span>
                 )}
               </div>
-              {open && <>
-                <span style={{ fontSize: 13.5, fontWeight: isActive ? 600 : 500, whiteSpace: "nowrap", flex: 1 }}>{item.label}</span>
-                {item.badge && (
-                  <span style={{ fontSize: 10, fontWeight: 700, background: "#e11d48", color: "#fff", borderRadius: 99, padding: "1px 6px" }}>{item.badge}</span>
-                )}
-                {isActive && <div style={{ width: 6, height: 6, borderRadius: 99, background: "#2dd4bf", flexShrink: 0 }} />}
-              </>}
+              {open && (
+                <>
+                  <span style={{ fontSize: 13.5, fontWeight: isActive ? 600 : 500, whiteSpace: "nowrap", flex: 1 }}>{item.label}</span>
+                  {item.badge && (
+                    <span style={{ fontSize: 10, fontWeight: 700, background: "#e11d48", color: "#fff", borderRadius: 99, padding: "1px 6px" }}>{item.badge}</span>
+                  )}
+                  {isActive && <div style={{ width: 6, height: 6, borderRadius: 99, background: "#2dd4bf", flexShrink: 0 }} />}
+                </>
+              )}
             </button>
           );
         })}
@@ -276,7 +290,7 @@ function Sidebar({ active, setActive, open, setOpen }) {
 
       {/* On-Call Panel */}
       {open && (
-        <div style={{ margin: "0 8px", padding: "12px", borderRadius: 12, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", marginBottom: 8 }}>
+        <div style={{ margin: "0 8px 8px", padding: "12px", borderRadius: 12, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", flexShrink: 0 }}>
           <p style={{ fontSize: 10, color: "rgba(255,255,255,0.35)", fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 8 }}>On Call Now</p>
           {ONCALL.map((doc, i) => (
             <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: i < ONCALL.length - 1 ? 8 : 0 }}>
@@ -285,14 +299,16 @@ function Sidebar({ active, setActive, open, setOpen }) {
               </div>
               <div style={{ overflow: "hidden" }}>
                 <p style={{ fontSize: 11.5, color: "rgba(255,255,255,0.75)", fontWeight: 600, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{doc.name}</p>
-                <p style={{ fontSize: 10, color: "rgba(255,255,255,0.32)" }}>{doc.spec} · <span style={{ color: doc.status === "On duty" ? "#4ade80" : "#fbbf24" }}>{doc.status}</span></p>
+                <p style={{ fontSize: 10, color: "rgba(255,255,255,0.32)" }}>
+                  {doc.spec} · <span style={{ color: doc.status === "On duty" ? "#4ade80" : "#fbbf24" }}>{doc.status}</span>
+                </p>
               </div>
             </div>
           ))}
         </div>
       )}
 
-      {/* Doctor Profile */}
+      {/* Doctor Profile footer */}
       <div style={{ padding: "10px 8px", borderTop: "1px solid rgba(255,255,255,0.06)", flexShrink: 0 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px", borderRadius: 10, cursor: "pointer" }}>
           <div style={{ position: "relative", flexShrink: 0 }}>
@@ -317,38 +333,35 @@ function Sidebar({ active, setActive, open, setOpen }) {
 /* ─── WEEKLY CHART ─── */
 function WeeklyChart() {
   const maxPat = Math.max(...WEEKLY_LOAD.map(d => d.patients));
-  const today = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][new Date().getDay()];
+  const todayLabel = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][new Date().getDay()];
   return (
-    <div className="card" style={{ padding: "0", overflow: "hidden" }}>
+    <div className="card" style={{ overflow: "hidden", display: "flex", flexDirection: "column" }}>
       <SectionHeader title="Weekly Patient Load" sub="This week — patients & surgeries by day" actionLabel="Full Report" />
       <div style={{ padding: "16px 20px 12px" }}>
-        {/* Legend */}
         <div style={{ display: "flex", gap: 16, marginBottom: 16 }}>
-          {[["#0d9488","Patients"],["#7c3aed","Surgeries"]].map(([c, l]) => (
+          {[["#0d9488", "Patients"], ["#7c3aed", "Surgeries"]].map(([c, l]) => (
             <div key={l} style={{ display: "flex", alignItems: "center", gap: 6 }}>
               <div style={{ width: 10, height: 10, borderRadius: 3, background: c }} />
               <span style={{ fontSize: 11.5, color: "#64748b", fontWeight: 500 }}>{l}</span>
             </div>
           ))}
         </div>
-        {/* Bars */}
         <div style={{ display: "flex", alignItems: "flex-end", gap: 6, height: 110 }}>
           {WEEKLY_LOAD.map((d) => {
-            const isToday = d.day === today;
+            const isToday = d.day === todayLabel;
             const patH = Math.max(4, (d.patients / maxPat) * 95);
             const surH = Math.max(0, (d.surgeries / 3) * 40);
             return (
               <div key={d.day} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 3 }}>
                 <div style={{ width: "100%", display: "flex", gap: 3, alignItems: "flex-end", height: 95 }}>
-                  <div className="bar-fill" title={`${d.patients} patients`} style={{ flex: 1, height: patH, borderRadius: "4px 4px 0 0", background: isToday ? "#0d9488" : "#e2f4f2", transition: "height 0.6s ease" }} />
-                  <div className="bar-fill" title={`${d.surgeries} surgeries`} style={{ flex: 1, height: surH, borderRadius: "4px 4px 0 0", background: isToday ? "#7c3aed" : "#ede9fe", transition: "height 0.6s ease" }} />
+                  <div title={`${d.patients} patients`} style={{ flex: 1, height: patH, borderRadius: "4px 4px 0 0", background: isToday ? "#0d9488" : "#e2f4f2", transition: "height 0.6s ease" }} />
+                  <div title={`${d.surgeries} surgeries`} style={{ flex: 1, height: surH, borderRadius: "4px 4px 0 0", background: isToday ? "#7c3aed" : "#ede9fe", transition: "height 0.6s ease" }} />
                 </div>
                 <span style={{ fontSize: 11, fontWeight: isToday ? 700 : 500, color: isToday ? "#0d9488" : "#94a3b8" }}>{d.day}</span>
               </div>
             );
           })}
         </div>
-        {/* Values row */}
         <div style={{ display: "flex", gap: 6, marginTop: 4 }}>
           {WEEKLY_LOAD.map((d) => (
             <div key={d.day} style={{ flex: 1, textAlign: "center" }}>
@@ -394,7 +407,7 @@ function WardStatus() {
   );
 }
 
-/* ─── TASKS ─── */
+/* ─── TASK LIST ─── */
 function TaskList() {
   const [tasks, setTasks] = useState(TASKS);
   const toggle = (i) => setTasks(prev => prev.map((t, idx) => idx === i ? { ...t, done: !t.done } : t));
@@ -406,7 +419,11 @@ function TaskList() {
         {tasks.map((task, i) => {
           const pc = PRIORITY_CONFIG[task.priority];
           return (
-            <div key={i} onClick={() => toggle(i)} style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 10px", borderRadius: 10, cursor: "pointer", background: task.done ? "#fafafa" : "#fff", border: "1px solid #f1f5f9", opacity: task.done ? 0.6 : 1, transition: "all 0.15s" }}>
+            <div
+              key={i}
+              onClick={() => toggle(i)}
+              style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 10px", borderRadius: 10, cursor: "pointer", background: task.done ? "#fafafa" : "#fff", border: "1px solid #f1f5f9", opacity: task.done ? 0.6 : 1, transition: "all 0.15s" }}
+            >
               <div style={{ width: 18, height: 18, borderRadius: 5, border: task.done ? "none" : "2px solid #cbd5e1", background: task.done ? "#0d9488" : "#fff", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.2s" }}>
                 {task.done && <Icon name="check" size={11} color="#fff" strokeWidth={3} />}
               </div>
@@ -420,7 +437,7 @@ function TaskList() {
   );
 }
 
-/* ─── MESSAGES PREVIEW ─── */
+/* ─── MESSAGES PANEL ─── */
 function MessagesPanel() {
   const unreadCount = MESSAGES.filter(m => m.unread).length;
   return (
@@ -428,7 +445,12 @@ function MessagesPanel() {
       <SectionHeader title="Messages" sub={`${unreadCount} unread`} actionLabel="Open Inbox" />
       <div style={{ display: "flex", flexDirection: "column" }}>
         {MESSAGES.map((msg, i) => (
-          <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "11px 16px", borderBottom: i < MESSAGES.length - 1 ? "1px solid #f8fafc" : "none", cursor: "pointer", background: msg.unread ? "#fafffe" : "#fff", transition: "background 0.15s" }}>
+          <div
+            key={i}
+            style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "11px 16px", borderBottom: i < MESSAGES.length - 1 ? "1px solid #f8fafc" : "none", cursor: "pointer", background: msg.unread ? "#fafffe" : "#fff", transition: "background 0.15s" }}
+            onMouseEnter={e => e.currentTarget.style.background = "#f8fffe"}
+            onMouseLeave={e => e.currentTarget.style.background = msg.unread ? "#fafffe" : "#fff"}
+          >
             <div style={{ width: 34, height: 34, borderRadius: 99, background: msg.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: "#334155", flexShrink: 0 }}>
               {msg.avatar}
             </div>
@@ -450,7 +472,7 @@ function MessagesPanel() {
   );
 }
 
-/* ─── RECENT ACTIVITY ─── */
+/* ─── ACTIVITY FEED ─── */
 function ActivityFeed() {
   return (
     <div className="card" style={{ overflow: "hidden" }}>
@@ -459,7 +481,7 @@ function ActivityFeed() {
         {RECENT_ACTIVITY.map((act, i) => {
           const cfg = ACTIVITY_ICONS[act.type];
           return (
-            <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
+            <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, position: "relative" }}>
               <div style={{ width: 30, height: 30, borderRadius: 8, background: cfg.bg, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 1 }}>
                 <Icon name={cfg.icon} size={14} color={cfg.color} strokeWidth={2} />
               </div>
@@ -468,7 +490,7 @@ function ActivityFeed() {
                 <p style={{ fontSize: 11, color: "#94a3b8", marginTop: 2 }}>{act.time}</p>
               </div>
               {i < RECENT_ACTIVITY.length - 1 && (
-                <div style={{ position: "absolute", left: 46, width: 1, height: 10, background: "#f1f5f9", marginTop: 30 }} />
+                <div style={{ position: "absolute", left: 14, top: 34, width: 1, height: 16, background: "#f1f5f9" }} />
               )}
             </div>
           );
@@ -480,35 +502,45 @@ function ActivityFeed() {
 
 /* ─── MAIN DASHBOARD ─── */
 export default function DoctorDashboard() {
-  const [activeNav, setActiveNav] = useState("dashboard");
+  const [activeNav, setActiveNav]     = useState("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [searchVal, setSearchVal] = useState("");
+  const [searchVal, setSearchVal]     = useState("");
 
-  const today = new Date().toLocaleDateString("en-GB", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
-  const hour = new Date().getHours();
+  const today    = new Date().toLocaleDateString("en-GB", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+  const hour     = new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
 
   const notifCount = 3;
-  const msgCount = MESSAGES.filter(m => m.unread).length;
+  const msgCount   = MESSAGES.filter(m => m.unread).length;
 
   return (
+    /*
+     * ROOT CONTAINER
+     * height:100vh + overflow:hidden gives us a fixed viewport.
+     * No scrolling happens here — all scrolling is in <main>.
+     */
     <div style={{ display: "flex", height: "100vh", background: "#f0f4f8", fontFamily: "'Plus Jakarta Sans', sans-serif", overflow: "hidden" }}>
       <style>{GLOBAL_CSS}</style>
 
       <Sidebar active={activeNav} setActive={setActiveNav} open={sidebarOpen} setOpen={setSidebarOpen} />
 
-      {/* Main Area */}
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0, overflow: "hidden" }}>
+      {/*
+       * RIGHT COLUMN
+       * flex:1      — fills remaining width
+       * minWidth:0  — prevents flex blowout from wide children
+       * overflow:hidden — clips children; scrolling lives inside <main>
+       */}
+      <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", overflow: "hidden" }}>
 
-        {/* ── TOP HEADER ── */}
-        <header style={{ height: 64, background: "#fff", borderBottom: "1px solid #e8edf3", display: "flex", alignItems: "center", padding: "0 24px", gap: 16, flexShrink: 0, zIndex: 5 }}>
+        {/* TOP HEADER — fixed height, never shrinks */}
+        <header style={{ height: 64, flexShrink: 0, background: "#fff", borderBottom: "1px solid #e8edf3", display: "flex", alignItems: "center", padding: "0 24px", gap: 16, zIndex: 5 }}>
           {!sidebarOpen && (
             <button onClick={() => setSidebarOpen(true)} style={{ color: "#64748b", marginRight: 4, padding: 6, borderRadius: 8 }}>
               <Icon name="menu" size={20} color="#64748b" />
             </button>
           )}
           <div>
-            <p style={{ fontWeight: 700, fontSize: 16, color: "#0f172a", lineHeight: 1.2 }} className="font-lora">{greeting}, Dr. Khalil</p>
+            <p className="font-lora" style={{ fontWeight: 700, fontSize: 16, color: "#0f172a", lineHeight: 1.2 }}>{greeting}, Dr. Khalil</p>
             <p style={{ fontSize: 12, color: "#94a3b8", marginTop: 1 }}>{today}</p>
           </div>
 
@@ -524,7 +556,7 @@ export default function DoctorDashboard() {
                 placeholder="Search patients, records…"
                 style={{ paddingLeft: 34, paddingRight: 14, paddingTop: 8, paddingBottom: 8, background: "#f8fafc", border: "1.5px solid #e8edf3", borderRadius: 10, fontSize: 13, color: "#334155", width: 240, transition: "border-color 0.2s", fontFamily: "'Plus Jakarta Sans', sans-serif" }}
                 onFocus={e => e.target.style.borderColor = "#0d9488"}
-                onBlur={e => e.target.style.borderColor = "#e8edf3"}
+                onBlur={e  => e.target.style.borderColor = "#e8edf3"}
               />
             </div>
 
@@ -536,7 +568,7 @@ export default function DoctorDashboard() {
               )}
             </button>
 
-            {/* Messages */}
+            {/* Messages badge */}
             <button style={{ position: "relative", width: 38, height: 38, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", background: "#f8fafc", border: "1.5px solid #e8edf3" }}>
               <Icon name="chat" size={18} color="#475569" />
               {msgCount > 0 && (
@@ -544,10 +576,9 @@ export default function DoctorDashboard() {
               )}
             </button>
 
-            {/* Divider */}
             <div style={{ width: 1, height: 28, background: "#e8edf3" }} />
 
-            {/* Doctor Avatar */}
+            {/* Doctor chip */}
             <div style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", padding: "4px 10px", borderRadius: 10, border: "1.5px solid #e8edf3", background: "#f8fafc" }}>
               <div style={{ width: 30, height: 30, borderRadius: 99, background: "linear-gradient(135deg, #0d9488, #059669)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: "#fff", fontWeight: 700 }}>AK</div>
               <div>
@@ -559,7 +590,14 @@ export default function DoctorDashboard() {
           </div>
         </header>
 
-        {/* ── DASHBOARD BODY ── */}
+        {/*
+         * MAIN SCROLLABLE AREA
+         * flex:1     — takes all remaining height after the header
+         * minHeight:0 — THE KEY FIX: overrides the default min-height:auto so
+         *               the element can actually shrink below its content height,
+         *               allowing overflowY:auto to kick in properly.
+         * overflowY:auto — scrollbar appears only when content is taller than this box
+         */}
         <main style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "20px 24px", display: "flex", flexDirection: "column", gap: 18 }}>
 
           {/* ── STAT CARDS ── */}
@@ -587,18 +625,19 @@ export default function DoctorDashboard() {
           {/* ── ROW 2: APPOINTMENTS + RIGHT PANEL ── */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 380px", gap: 14 }}>
 
-            {/* Appointments */}
+            {/* Appointments table */}
             <div className="card" style={{ overflow: "hidden" }}>
               <SectionHeader title="Today's Appointments" sub="6 scheduled · 2 completed · 3 remaining" actionLabel="New Appointment" />
               <div>
-                {/* Table header */}
                 <div style={{ display: "grid", gridTemplateColumns: "70px 1fr 1fr 90px 110px 40px", gap: 8, padding: "8px 20px", background: "#f8fafc", borderBottom: "1px solid #f1f5f9" }}>
                   {["Time", "Patient", "Visit Type", "Room", "Status", ""].map((h, i) => (
                     <span key={i} style={{ fontSize: 10.5, fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.06em" }}>{h}</span>
                   ))}
                 </div>
                 {APPOINTMENTS.map((apt, idx) => (
-                  <div key={idx} style={{ display: "grid", gridTemplateColumns: "70px 1fr 1fr 90px 110px 40px", gap: 8, padding: "13px 20px", borderBottom: idx < APPOINTMENTS.length - 1 ? "1px solid #f8fafc" : "none", alignItems: "center", cursor: "pointer", transition: "background 0.15s" }}
+                  <div
+                    key={idx}
+                    style={{ display: "grid", gridTemplateColumns: "70px 1fr 1fr 90px 110px 40px", gap: 8, padding: "13px 20px", borderBottom: idx < APPOINTMENTS.length - 1 ? "1px solid #f8fafc" : "none", alignItems: "center", cursor: "pointer", transition: "background 0.15s" }}
                     onMouseEnter={e => e.currentTarget.style.background = "#fafffe"}
                     onMouseLeave={e => e.currentTarget.style.background = "transparent"}
                   >
@@ -626,7 +665,7 @@ export default function DoctorDashboard() {
               </div>
             </div>
 
-            {/* Right column: Lab Alerts + Quick Actions */}
+            {/* Right column */}
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
 
               {/* Lab Alerts */}
@@ -671,16 +710,18 @@ export default function DoctorDashboard() {
                 <SectionHeader title="Quick Actions" />
                 <div style={{ padding: "12px 14px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                   {[
-                    { label: "New Prescription", icon: "pill",     color: "#7c3aed", bg: "#f5f3ff" },
-                    { label: "Add Patient",       icon: "users",    color: "#0d9488", bg: "#f0fdfa" },
-                    { label: "Order Lab Test",    icon: "flask",    color: "#2563eb", bg: "#eff6ff" },
-                    { label: "Refer Patient",     icon: "file",     color: "#d97706", bg: "#fffbeb" },
-                    { label: "Book Surgery",      icon: "surgery",  color: "#e11d48", bg: "#fff1f2" },
-                    { label: "Send Message",      icon: "chat",     color: "#0891b2", bg: "#ecfeff" },
+                    { label: "New Prescription", icon: "pill",    color: "#7c3aed", bg: "#f5f3ff" },
+                    { label: "Add Patient",       icon: "users",   color: "#0d9488", bg: "#f0fdfa" },
+                    { label: "Order Lab Test",    icon: "flask",   color: "#2563eb", bg: "#eff6ff" },
+                    { label: "Refer Patient",     icon: "file",    color: "#d97706", bg: "#fffbeb" },
+                    { label: "Book Surgery",      icon: "surgery", color: "#e11d48", bg: "#fff1f2" },
+                    { label: "Send Message",      icon: "chat",    color: "#0891b2", bg: "#ecfeff" },
                   ].map((a) => (
-                    <button key={a.label} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, padding: "12px 8px", borderRadius: 10, background: a.bg, border: "1px solid transparent", transition: "all 0.15s", textAlign: "center" }}
+                    <button
+                      key={a.label}
+                      style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, padding: "12px 8px", borderRadius: 10, background: a.bg, border: "1px solid transparent", transition: "all 0.15s", textAlign: "center" }}
                       onMouseEnter={e => { e.currentTarget.style.filter = "brightness(0.96)"; e.currentTarget.style.transform = "scale(1.02)"; }}
-                      onMouseLeave={e => { e.currentTarget.style.filter = "brightness(1)"; e.currentTarget.style.transform = "scale(1)"; }}
+                      onMouseLeave={e => { e.currentTarget.style.filter = "brightness(1)";   e.currentTarget.style.transform = "scale(1)"; }}
                     >
                       <Icon name={a.icon} size={20} color={a.color} strokeWidth={2} />
                       <span style={{ fontSize: 11.5, fontWeight: 600, color: a.color, lineHeight: 1.3 }}>{a.label}</span>
@@ -691,26 +732,25 @@ export default function DoctorDashboard() {
             </div>
           </div>
 
-          {/* ── ROW 3: CHART + WARD + MESSAGES + TASKS ── */}
+          {/* ── ROW 3: CHART + WARD ── */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
             <WeeklyChart />
             <WardStatus />
           </div>
 
+          {/* ── ROW 4: MESSAGES + TASKS ── */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
             <MessagesPanel />
             <TaskList />
           </div>
 
-          {/* ── ROW 5: RECENT ACTIVITY ── */}
+          {/* ── ROW 5: ACTIVITY FEED ── */}
           <ActivityFeed />
 
-          {/* Bottom spacer */}
+          {/* Bottom breathing room */}
           <div style={{ height: 8 }} />
         </main>
       </div>
     </div>
   );
-  
 }
-
