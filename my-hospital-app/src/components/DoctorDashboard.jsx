@@ -560,7 +560,7 @@ export default function DoctorDashboard() {
         </header>
 
         {/* ── DASHBOARD BODY ── */}
-        <main style={{ flex: 1, overflowY: "auto", padding: "20px 24px", display: "flex", flexDirection: "column", gap: 18 }}>
+        <main style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "20px 24px", display: "flex", flexDirection: "column", gap: 18 }}>
 
           {/* ── STAT CARDS ── */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14 }}>
