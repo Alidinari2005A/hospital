@@ -52,7 +52,7 @@ function DashboardShell({ role, accentColor, accentBg, navItems, cards, children
         </div>
 
         {/* Nav */}
-        <nav style={{ flex: 1, padding: "12px 8px", display: "flex", flexDirection: "column", gap: 2 }}>
+        <nav style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "12px 8px", display: "flex", flexDirection: "column", gap: 2 }}>
           {navItems.map((item, i) => (
             <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 10, background: item.active ? `${accentColor}22` : "transparent", color: item.active ? accentColor : "rgba(255,255,255,0.42)", fontWeight: item.active ? 600 : 500, fontSize: 13.5, cursor: "pointer" }}>
               <span style={{ fontSize: 16 }}>{item.emoji}</span>
@@ -98,7 +98,7 @@ function DashboardShell({ role, accentColor, accentBg, navItems, cards, children
         </header>
 
         {/* Body */}
-        <main style={{ flex: 1, overflowY: "auto", padding: "24px" }}>
+       <main style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "24px" }}>
           {/* Stat Cards */}
           <div style={{ display: "grid", gridTemplateColumns: `repeat(${cards.length}, 1fr)`, gap: 14, marginBottom: 20 }}>
             {cards.map((c, i) => (
