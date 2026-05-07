@@ -1,3 +1,4 @@
+
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -11,13 +12,11 @@ export default function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          {/* Public Landing Page - Add this */}
+          {/* Public Routes */}
           <Route path="/" element={<HospitalLanding />} />
-          
-          {/* Public Login */}
           <Route path="/login" element={<Login />} />
 
-          {/* Role-protected routes */}
+          {/* Protected Routes */}
           <Route path="/doctor" element={
             <ProtectedRoute allowedRole="doctor">
               <DoctorDashboard />
@@ -42,7 +41,7 @@ export default function App() {
             </ProtectedRoute>
           } />
 
-          {/* Catch-all → landing page instead of login */}
+          {/* Catch-all redirection */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
