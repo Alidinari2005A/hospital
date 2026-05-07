@@ -14,28 +14,24 @@ export default function LoginPage() {
     }
     setLoading(true);
     setError("");
-    try {
-      const response = await fetch("http://localhost:3000/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        setError(data.message || "Wrong email or password. Please try again.");
-        return;
-      }
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("role", data.role);
-      if (data.role === "doctor")       window.location.href = "/doctor-dashboard";
-      else if (data.role === "patient") window.location.href = "/patient-dashboard";
-      else if (data.role === "nurse")   window.location.href = "/nurse-dashboard";
-      else                              window.location.href = "/dashboard";
-    } catch {
-      setError("Cannot connect to server. Is Dev 2's server running on port 3000?");
-    } finally {
-      setLoading(false);
-    }
+    await new Promise((res) => setTimeout(res, 800));
+
+const roleMap = {
+  "doctor@hospital.com":  { role: "doctor",  path: "/doctor"  },
+  "patient@hospital.com": { role: "patient", path: "/patient" },
+  "nurse@hospital.com":   { role: "nurse",   path: "/nurse"   },
+  "admin@hospital.com":   { role: "admin",   path: "/admin"   },
+};
+
+const match = roleMap[email];
+if (match) {
+  localStorage.setItem("token", "mock-token");
+  localStorage.setItem("role", match.role);
+  window.location.href = match.path;
+} else {
+  setError("Wrong email or password. Please try again.");
+  setLoading(false);
+}
   }
 
   return (

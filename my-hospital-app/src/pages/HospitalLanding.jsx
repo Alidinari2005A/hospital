@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -6,9 +7,11 @@ import {
   Menu, X, ArrowRight 
 } from 'lucide-react';
 
+
 const HospitalLanding = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
+  const navigate = useNavigate();
 
   const testimonials = [
     "MedCore's emergency team was incredibly fast. I felt I was in safe hands from the moment I arrived.",
@@ -93,6 +96,7 @@ const HospitalLanding = () => {
             <motion.button 
               whileHover={{ scale: 1.05 }} 
               whileTap={{ scale: 0.95 }}
+              onClick={() => navigate('/login')}
               className="btn-glow"
               style={{ background: '#0f172a', color: 'white', padding: '10px 24px', borderRadius: '12px', border: 'none', fontWeight: 600, cursor: 'pointer' }}>
               Login
