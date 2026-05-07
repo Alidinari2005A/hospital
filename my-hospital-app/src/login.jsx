@@ -1,176 +1,220 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "./context/AuthContext";
 
-const CSS = `
-  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Lora:wght@600;700&display=swap');
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Plus Jakarta Sans', sans-serif; }
-  input:focus { outline: none; }
-  button { cursor: pointer; border: none; }
-  .login-input:focus { border-color: #0d9488 !important; box-shadow: 0 0 0 3px rgba(13,148,136,0.12); }
-  .login-btn:hover { background: #0b7a71 !important; }
-  .login-btn:active { transform: scale(0.98); }
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  .fade-up { animation: fadeUp 0.5s ease both; }
-`;
-
-const ROLE_COLORS = {
-  doctor:  { bg: "#eff6ff", text: "#1d4ed8", label: "Doctor" },
-  patient: { bg: "#f0fdf4", text: "#166534", label: "Patient" },
-  nurse:   { bg: "#fdf4ff", text: "#7e22ce", label: "Nurse" },
-  admin:   { bg: "#fff7ed", text: "#9a3412", label: "Admin" },
-};
-
-export default function Login() {
-  const { login } = useAuth();
-  const navigate = useNavigate();
-
-  const [email, setEmail]       = useState("");
+export default function LoginPage() {
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPass, setShowPass] = useState(false);
-  const [error, setError]       = useState("");
-  const [loading, setLoading]   = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!email || !password) { setError("Please fill in both fields."); return; }
-    setError("");
-    setLoading(true);
-
-    // Simulate a small delay (replace with real API call later)
-    await new Promise(r => setTimeout(r, 600));
-
-    const result = login(email, password);
-    setLoading(false);
-
-    if (!result.success) {
-      setError(result.message);
-    } else {
-      navigate(result.redirect, { replace: true });
+  async function handleLogin() {
+    if (!email || !password) {
+      setError("Please enter your email and password to continue.");
+      return;
     }
-  };
+    setLoading(true);
+    setError("");
+    try {
+      const response = await fetch("http://localhost:3000/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        setError(data.message || "Wrong email or password. Please try again.");
+        return;
+      }
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("role", data.role);
+      if (data.role === "doctor")       window.location.href = "/doctor-dashboard";
+      else if (data.role === "patient") window.location.href = "/patient-dashboard";
+      else if (data.role === "nurse")   window.location.href = "/nurse-dashboard";
+      else                              window.location.href = "/dashboard";
+    } catch {
+      setError("Cannot connect to server. Is Dev 2's server running on port 3000?");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
-    <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #0b1f3a 0%, #0d2e52 60%, #0f3a60 100%)", display: "flex", alignItems: "center", justifyContent: "center", padding: 24, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-      <style>{CSS}</style>
+    <>
+      {/* Google Fonts */}
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap');
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: #f0f4f8; }
+        input:focus { outline: none; border-color: #1a6fb5 !important; box-shadow: 0 0 0 4px rgba(26,111,181,0.1) !important; background: #fff !important; }
+        input::placeholder { color: #b0bac9; }
+        .role-btn:hover { border-color: #1a6fb5 !important; background: #eff6ff !important; color: #1a6fb5 !important; }
+        .login-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(15,76,129,0.4) !important; }
+        .login-btn:active:not(:disabled) { transform: translateY(0); }
+        .forgot:hover { text-decoration: underline; }
+      `}</style>
 
-      {/* Background decorations */}
-      <div style={{ position: "fixed", top: -120, right: -120, width: 400, height: 400, borderRadius: "50%", background: "rgba(13,148,136,0.08)", pointerEvents: "none" }} />
-      <div style={{ position: "fixed", bottom: -80, left: -80, width: 300, height: 300, borderRadius: "50%", background: "rgba(99,102,241,0.07)", pointerEvents: "none" }} />
+      <div style={s.page}>
 
-      <div className="fade-up" style={{ width: "100%", maxWidth: 420 }}>
+        {/* ── LEFT PANEL ── */}
+        <div style={s.left}>
+          <div style={s.c1} />
+          <div style={s.c2} />
+          <div style={s.c3} />
 
-        {/* Card */}
-        <div style={{ background: "#fff", borderRadius: 20, padding: "40px 36px", boxShadow: "0 24px 60px rgba(0,0,0,0.22)" }}>
-
-          {/* Logo */}
-          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 32 }}>
-            <div style={{ width: 42, height: 42, borderRadius: 12, background: "linear-gradient(135deg, #0d9488, #059669)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 6px 16px rgba(13,148,136,0.35)" }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 4v16m8-8H4" />
+          <div style={s.brand}>
+            <div style={s.brandIcon}>
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                <rect x="9" y="2" width="4" height="18" rx="2" fill="white" />
+                <rect x="2" y="9" width="18" height="4" rx="2" fill="white" />
               </svg>
             </div>
-            <div>
-              <p style={{ fontFamily: "'Lora', serif", fontSize: 20, fontWeight: 700, color: "#0f172a", lineHeight: 1 }}>MedCore</p>
-              <p style={{ fontSize: 11, color: "#94a3b8", marginTop: 2 }}>Hospital Management System</p>
-            </div>
+            <span style={s.brandName}>MediSystem</span>
           </div>
 
-          <h1 style={{ fontSize: 22, fontWeight: 800, color: "#0f172a", marginBottom: 6 }}>Welcome back</h1>
-          <p style={{ fontSize: 13.5, color: "#64748b", marginBottom: 28 }}>Sign in to access your dashboard</p>
+          <div style={s.leftBody}>
+            <h2 style={s.leftTitle}>
+              Your hospital,{" "}
+              <em style={{ fontStyle: "italic", color: "rgba(255,255,255,0.7)" }}>
+                all in one place.
+              </em>
+            </h2>
+            <p style={s.leftSub}>
+              A secure portal for doctors, patients, nurses and staff.
+              Everything you need, always accessible.
+            </p>
+          </div>
 
-          <form onSubmit={handleSubmit}>
-            {/* Email */}
-            <div style={{ marginBottom: 16 }}>
-              <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#374151", marginBottom: 6 }}>Email address</label>
-              <input
-                type="email"
-                className="login-input"
-                placeholder="you@hospital.com"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                style={{ width: "100%", padding: "11px 14px", border: "1.5px solid #e2e8f0", borderRadius: 10, fontSize: 14, color: "#1e293b", background: "#f8fafc", transition: "border-color 0.2s, box-shadow 0.2s", fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-              />
-            </div>
-
-            {/* Password */}
-            <div style={{ marginBottom: 20 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-                <label style={{ fontSize: 13, fontWeight: 600, color: "#374151" }}>Password</label>
-                <button type="button" style={{ fontSize: 12, color: "#0d9488", fontWeight: 600, background: "none" }}>
-                  Forgot password?
-                </button>
+          <div style={s.pills}>
+            {[
+              { color: "#34d399", text: "Secure & encrypted access" },
+              { color: "#60a5fa", text: "Real-time patient records" },
+              { color: "#fbbf24", text: "Available 24 / 7" },
+            ].map((p) => (
+              <div key={p.text} style={s.pill}>
+                <div style={{ ...s.pillDot, background: p.color }} />
+                <span style={s.pillText}>{p.text}</span>
               </div>
-              <div style={{ position: "relative" }}>
-                <input
-                  type={showPass ? "text" : "password"}
-                  className="login-input"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  style={{ width: "100%", padding: "11px 42px 11px 14px", border: "1.5px solid #e2e8f0", borderRadius: 10, fontSize: 14, color: "#1e293b", background: "#f8fafc", transition: "border-color 0.2s, box-shadow 0.2s", fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-                />
-                <button type="button" onClick={() => setShowPass(!showPass)} style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", color: "#94a3b8" }}>
-                  {showPass
-                    ? <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-                    : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                  }
-                </button>
-              </div>
-            </div>
-
-            {/* Error */}
-            {error && (
-              <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 14px", borderRadius: 10, background: "#fff1f2", border: "1px solid #fecdd3", marginBottom: 16 }}>
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#e11d48" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-                </svg>
-                <span style={{ fontSize: 13, color: "#9f1239", fontWeight: 500 }}>{error}</span>
-              </div>
-            )}
-
-            {/* Submit */}
-            <button type="submit" className="login-btn" disabled={loading}
-              style={{ width: "100%", padding: "13px", borderRadius: 11, background: loading ? "#94a3b8" : "#0d9488", color: "#fff", fontSize: 15, fontWeight: 700, transition: "background 0.2s, transform 0.1s", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-              {loading ? "Signing in…" : "Sign In"}
-            </button>
-          </form>
-
-          {/* Demo credentials */}
-          <div style={{ marginTop: 28, padding: "16px", borderRadius: 12, background: "#f8fafc", border: "1px solid #e2e8f0" }}>
-            <p style={{ fontSize: 11.5, fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10 }}>Demo credentials</p>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
-              {[
-                { role: "doctor",  email: "doctor@hospital.com",  pass: "doctor123" },
-                { role: "patient", email: "patient@hospital.com", pass: "patient123" },
-                { role: "nurse",   email: "nurse@hospital.com",   pass: "nurse123" },
-                { role: "admin",   email: "admin@hospital.com",   pass: "admin123" },
-              ].map(cred => {
-                const rc = ROLE_COLORS[cred.role];
-                return (
-                  <button key={cred.role} type="button"
-                    onClick={() => { setEmail(cred.email); setPassword(cred.pass); setError(""); }}
-                    style={{ textAlign: "left", padding: "8px 10px", borderRadius: 8, background: rc.bg, border: "none", cursor: "pointer", transition: "filter 0.15s" }}
-                    onMouseEnter={e => e.currentTarget.style.filter = "brightness(0.96)"}
-                    onMouseLeave={e => e.currentTarget.style.filter = "brightness(1)"}
-                  >
-                    <p style={{ fontSize: 11.5, fontWeight: 700, color: rc.text, textTransform: "capitalize" }}>{cred.role}</p>
-                    <p style={{ fontSize: 10.5, color: "#64748b", marginTop: 1 }}>{cred.pass}</p>
-                  </button>
-                );
-              })}
-            </div>
+            ))}
           </div>
         </div>
 
-        <p style={{ textAlign: "center", marginTop: 20, fontSize: 12, color: "rgba(255,255,255,0.3)" }}>
-          © 2026 MedCore HMS · All rights reserved
-        </p>
+        {/* ── RIGHT PANEL ── */}
+        <div style={s.right}>
+          <p style={s.welcome}>Staff Portal</p>
+          <h1 style={s.title}>Sign in to your account</h1>
+          <p style={s.subtitle}>Welcome back. Please enter your details below.</p>
+
+          {error && <div style={s.errorBox}>{error}</div>}
+
+          <div style={s.field}>
+            <label style={s.label}>Email address</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@hospital.com"
+              style={s.input}
+              onKeyDown={(e) => e.key === "Enter" && handleLogin()}
+            />
+          </div>
+
+          <div style={s.field}>
+            <label style={s.label}>Password</label>
+            <div style={{ position: "relative" }}>
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                style={{ ...s.input, paddingRight: "64px" }}
+                onKeyDown={(e) => e.key === "Enter" && handleLogin()}
+              />
+              <button
+                onClick={() => setShowPassword(!showPassword)}
+                style={s.toggleBtn}
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
+          </div>
+
+          <a href="#" className="forgot" style={s.forgot}>
+            Forgot your password?
+          </a>
+
+          <button
+            onClick={handleLogin}
+            disabled={loading}
+            className="login-btn"
+            style={{
+              ...s.loginBtn,
+              opacity: loading ? 0.65 : 1,
+              cursor: loading ? "not-allowed" : "pointer",
+            }}
+          >
+            {loading ? "Signing in..." : "Sign In"}
+          </button>
+
+          <div style={s.dividerRow}>
+            <div style={s.dividerLine} />
+            <span style={s.dividerText}>sign in as</span>
+            <div style={s.dividerLine} />
+          </div>
+
+          <div style={s.roles}>
+            {[
+              { label: "🩺 Doctor",  email: "doctor@hospital.com" },
+              { label: "🏥 Patient", email: "patient@hospital.com" },
+              { label: "💊 Nurse",   email: "nurse@hospital.com" },
+              { label: "⚙️ Admin",   email: "admin@hospital.com" },
+            ].map((r) => (
+              <button
+                key={r.label}
+                className="role-btn"
+                onClick={() => setEmail(r.email)}
+                style={s.roleBtn}
+              >
+                {r.label}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
+
+// ─── Styles ───────────────────────────────────────────────────────────────────
+const s = {
+  page: { display:"flex", minHeight:"100vh", fontFamily:"'DM Sans', sans-serif" },
+  left: { flex:1, background:"linear-gradient(160deg, #0f4c81 0%, #1a6fb5 40%, #0d8a7a 100%)", padding:"48px 44px", display:"flex", flexDirection:"column", justifyContent:"space-between", position:"relative", overflow:"hidden" },
+  c1: { position:"absolute", width:320, height:320, borderRadius:"50%", border:"1px solid rgba(255,255,255,0.08)", top:-80, right:-80 },
+  c2: { position:"absolute", width:220, height:220, borderRadius:"50%", border:"1px solid rgba(255,255,255,0.06)", bottom:-40, left:-60 },
+  c3: { position:"absolute", width:140, height:140, borderRadius:"50%", background:"rgba(255,255,255,0.04)", top:"40%", right:20 },
+  brand: { display:"flex", alignItems:"center", gap:12, position:"relative", zIndex:1 },
+  brandIcon: { width:44, height:44, background:"rgba(255,255,255,0.15)", borderRadius:12, display:"flex", alignItems:"center", justifyContent:"center", border:"1px solid rgba(255,255,255,0.2)" },
+  brandName: { fontSize:18, fontWeight:600, color:"#fff", letterSpacing:"-0.3px" },
+  leftBody: { position:"relative", zIndex:1 },
+  leftTitle: { fontFamily:"'DM Serif Display', serif", fontSize:38, color:"#fff", lineHeight:1.15, marginBottom:16 },
+  leftSub: { fontSize:14, color:"rgba(255,255,255,0.65)", lineHeight:1.75, maxWidth:280 },
+  pills: { display:"flex", flexDirection:"column", gap:10, position:"relative", zIndex:1 },
+  pill: { display:"flex", alignItems:"center", gap:10, background:"rgba(255,255,255,0.1)", border:"1px solid rgba(255,255,255,0.15)", borderRadius:40, padding:"10px 16px" },
+  pillDot: { width:8, height:8, borderRadius:"50%", flexShrink:0 },
+  pillText: { fontSize:13, color:"rgba(255,255,255,0.85)", fontWeight:500 },
+  right: { width:440, background:"#ffffff", padding:"52px 44px", display:"flex", flexDirection:"column", justifyContent:"center", flexShrink:0 },
+  welcome: { fontSize:12, fontWeight:600, color:"#0f4c81", letterSpacing:"0.07em", textTransform:"uppercase", marginBottom:10 },
+  title: { fontFamily:"'DM Serif Display', serif", fontSize:32, color:"#0d1f35", marginBottom:6, lineHeight:1.2 },
+  subtitle: { fontSize:14, color:"#6b7a90", marginBottom:36, lineHeight:1.65 },
+  errorBox: { background:"#fff5f5", border:"1.5px solid #fecaca", borderRadius:10, padding:"12px 16px", fontSize:13, color:"#dc2626", marginBottom:18 },
+  field: { marginBottom:20 },
+  label: { display:"block", fontSize:12, fontWeight:600, color:"#374151", letterSpacing:"0.05em", textTransform:"uppercase", marginBottom:8 },
+  input: { width:"100%", padding:"14px 18px", border:"1.5px solid #e2e8f0", borderRadius:12, fontFamily:"'DM Sans', sans-serif", fontSize:15, color:"#0d1f35", background:"#f8fafc", transition:"border-color 0.2s, box-shadow 0.2s" },
+  toggleBtn: { position:"absolute", right:14, top:"50%", transform:"translateY(-50%)", background:"none", border:"none", cursor:"pointer", fontSize:12, fontWeight:600, color:"#1a6fb5", fontFamily:"'DM Sans', sans-serif", padding:"4px 6px" },
+  forgot: { display:"block", textAlign:"right", fontSize:12, color:"#1a6fb5", fontWeight:500, marginTop:-12, marginBottom:24, cursor:"pointer", textDecoration:"none" },
+  loginBtn: { width:"100%", padding:16, background:"linear-gradient(135deg, #0f4c81, #1a6fb5)", border:"none", borderRadius:12, color:"#fff", fontFamily:"'DM Sans', sans-serif", fontSize:15, fontWeight:600, boxShadow:"0 4px 20px rgba(15,76,129,0.3)", letterSpacing:"0.01em", transition:"transform 0.15s, box-shadow 0.15s" },
+  dividerRow: { display:"flex", alignItems:"center", gap:12, margin:"24px 0" },
+  dividerLine: { flex:1, height:1, background:"#e8edf3" },
+  dividerText: { fontSize:12, color:"#94a3b8", fontWeight:500, whiteSpace:"nowrap" },
+  roles: { display:"grid", gridTemplateColumns:"1fr 1fr", gap:8 },
+  roleBtn: { padding:"10px 8px", border:"1.5px solid #e2e8f0", borderRadius:10, background:"#f8fafc", cursor:"pointer", fontFamily:"'DM Sans', sans-serif", fontSize:12, fontWeight:600, color:"#374151", transition:"all 0.2s", textAlign:"center" },
+};
