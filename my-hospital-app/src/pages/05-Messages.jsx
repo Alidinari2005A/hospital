@@ -131,7 +131,7 @@ export default function Messages() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-8">
+    <div className="min-h-screen bg-linear-to-br from-slate-950 via-slate-900 to-slate-950 p-8">
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700&family=Outfit:wght@400;500;600&display=swap');
         body { font-family: 'Outfit', sans-serif; }
@@ -193,7 +193,7 @@ export default function Messages() {
                   className={`thread-item w-full p-4 text-left transition-all hover:bg-slate-700/30 ${selectedThread?.id === thread.id ? 'bg-slate-700/50' : ''}`}
                 >
                   <div className="flex items-start gap-3">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 font-semibold text-sm ${
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 font-semibold text-sm ${
                       thread.type === 'patient' ? 'bg-teal-500/30 text-teal-300' : 'bg-blue-500/30 text-blue-300'
                     }`}>
                       {thread.avatar}
@@ -204,7 +204,7 @@ export default function Messages() {
                           {thread.name}
                         </p>
                         {thread.unread > 0 && (
-                          <span className="bg-teal-500 text-white text-xs font-bold px-2 py-0.5 rounded-full flex-shrink-0">
+                          <span className="bg-teal-500 text-white text-xs font-bold px-2 py-0.5 rounded-full shrink-0">
                             {thread.unread}
                           </span>
                         )}
@@ -249,7 +249,7 @@ export default function Messages() {
                     className={`message-item flex gap-3 ${message.fromPatient ? 'justify-start' : 'justify-end'}`}
                   >
                     {message.fromPatient && (
-                      <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center flex-shrink-0">
+                      <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center shrink-0">
                         <User size={16} className="text-slate-400" />
                       </div>
                     )}
@@ -264,7 +264,7 @@ export default function Messages() {
                       <p className="text-xs text-slate-500">{message.timestamp}</p>
                     </div>
                     {!message.fromPatient && (
-                      <div className="w-8 h-8 rounded-full bg-teal-500 flex items-center justify-center flex-shrink-0">
+                      <div className="w-8 h-8 rounded-full bg-teal-500 flex items-center justify-center shrink-0">
                         <CheckCheck size={16} className="text-slate-950" />
                       </div>
                     )}
