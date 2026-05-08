@@ -1,99 +1,218 @@
 import { useState } from 'react';
-import { ChevronRight, ChevronLeft, Clock, CheckCircle, Loader, Plus, X, Edit2, Trash2 } from 'lucide-react';
 
-const mockAppointments = [
-  { id: 1, patientName: 'Ahmed Hassan',      time: '09:00', status: 'waiting',     type: 'Consultation', notes: 'Hypertension follow-up'   },
-  { id: 2, patientName: 'Fatima Al-Rashid',  time: '09:30', status: 'in_progress', type: 'Emergency',    notes: 'Chest pain assessment'     },
-  { id: 3, patientName: 'Mohammad Khan',     time: '10:15', status: 'waiting',     type: 'Follow-up',    notes: 'Post-operative check'       },
-  { id: 4, patientName: 'Layla Mansouri',    time: '11:00', status: 'completed',   type: 'Prenatal',     notes: 'Pregnancy checkup'          },
-  { id: 5, patientName: 'Hassan Ibrahim',    time: '14:00', status: 'waiting',     type: 'Consultation', notes: 'General checkup'            },
-  { id: 6, patientName: 'Noor Al-Mansouri', time: '14:45', status: 'in_progress', type: 'Emergency',    notes: 'Asthma assessment'          },
-  { id: 7, patientName: 'Sara Mohamed',      time: '15:30', status: 'waiting',     type: 'Follow-up',    notes: 'Medication adjustment'      },
-  { id: 8, patientName: 'Omar Ibrahim',      time: '16:15', status: 'waiting',     type: 'Consultation', notes: 'New patient intake'         },
-];
-
-const statusStyles = {
-  waiting:     { bg: 'bg-amber-500/20', text: 'text-amber-300', border: 'border-amber-500/40', label: 'Waiting',     icon: Clock        },
-  in_progress: { bg: 'bg-blue-500/20',  text: 'text-blue-300',  border: 'border-blue-500/40',  label: 'In Progress', icon: Loader       },
-  completed:   { bg: 'bg-green-500/20', text: 'text-green-300', border: 'border-green-500/40', label: 'Completed',   icon: CheckCircle  },
-};
-
-export default function Appointments() {
-  const [currentDate, setCurrentDate]               = useState(new Date(2024, 0, 17));
-  const [viewMode, setViewMode]                     = useState('calendar');
+export default function AppointmentsDashboard() {
+  const [currentDate, setCurrentDate] = useState(new Date(2024, 0, 17));
+  const [viewMode, setViewMode] = useState('calendar');
   const [selectedAppointment, setSelectedAppointment] = useState(null);
-  const [showNewForm, setShowNewForm]               = useState(false);
+  const [showNewForm, setShowNewForm] = useState(false);
 
-  const monthName = currentDate.toLocaleString('default', { month: 'long', year: 'numeric' });
+  const appointments = [
+    { id: 1, patientName: 'Ahmed Hassan', time: '09:00', status: 'waiting', type: 'Consultation', notes: 'Hypertension follow-up' },
+    { id: 2, patientName: 'Fatima Al-Rashid', time: '09:30', status: 'in_progress', type: 'Emergency', notes: 'Chest pain assessment' },
+    { id: 3, patientName: 'Mohammad Khan', time: '10:15', status: 'waiting', type: 'Follow-up', notes: 'Post-operative check' },
+    { id: 4, patientName: 'Layla Mansouri', time: '11:00', status: 'completed', type: 'Prenatal', notes: 'Pregnancy checkup' },
+    { id: 5, patientName: 'Hassan Ibrahim', time: '14:00', status: 'waiting', type: 'Consultation', notes: 'General checkup' },
+    { id: 6, patientName: 'Noor Al-Mansouri', time: '14:45', status: 'in_progress', type: 'Emergency', notes: 'Asthma assessment' },
+    { id: 7, patientName: 'Sara Mohamed', time: '15:30', status: 'waiting', type: 'Follow-up', notes: 'Medication adjustment' },
+    { id: 8, patientName: 'Omar Ibrahim', time: '16:15', status: 'waiting', type: 'Consultation', notes: 'New patient intake' },
+  ];
+
+  const statusColors = {
+    waiting: { bg: '#fef3c7', text: '#b45309', icon: '⏱' },
+    in_progress: { bg: '#dbeafe', text: '#1e40af', icon: '⚙️' },
+    completed: { bg: '#dcfce7', text: '#166534', icon: '✓' },
+  };
 
   const getDaysInMonth = (date) => new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
   const getFirstDayOfMonth = (date) => new Date(date.getFullYear(), date.getMonth(), 1).getDay();
 
   const daysInMonth = getDaysInMonth(currentDate);
-  const firstDay    = getFirstDayOfMonth(currentDate);
-  const days        = Array.from({ length: firstDay }, () => null).concat(Array.from({ length: daysInMonth }, (_, i) => i + 1));
+  const firstDay = getFirstDayOfMonth(currentDate);
+  const days = Array.from({ length: firstDay }, () => null).concat(
+    Array.from({ length: daysInMonth }, (_, i) => i + 1)
+  );
+
+  const monthName = currentDate.toLocaleString('default', { month: 'long', year: 'numeric' });
 
   const isToday = (day) => {
     const today = new Date();
-    return day === today.getDate() && currentDate.getMonth() === today.getMonth() && currentDate.getFullYear() === today.getFullYear();
+    return (
+      day === today.getDate() &&
+      currentDate.getMonth() === today.getMonth() &&
+      currentDate.getFullYear() === today.getFullYear()
+    );
   };
 
-  const appointmentsForDate = mockAppointments;
+  const containerStyle = {
+    padding: '20px',
+    background: 'var(--color-background-primary)',
+    fontFamily: 'var(--font-sans)',
+  };
+
+  const headerStyle = {
+    marginBottom: '24px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  };
+
+  const titleStyle = {
+    fontSize: '28px',
+    fontWeight: '500',
+    color: 'var(--color-text-primary)',
+    margin: '0 0 8px 0',
+  };
+
+  const subtitleStyle = {
+    fontSize: '14px',
+    color: 'var(--color-text-secondary)',
+    margin: 0,
+  };
+
+  const buttonGroupStyle = {
+    display: 'flex',
+    gap: '8px',
+    marginBottom: '20px',
+  };
+
+  const toggleButtonStyle = (isActive) => ({
+    padding: '10px 16px',
+    border: isActive ? '1px solid var(--color-border-primary)' : '0.5px solid var(--color-border-tertiary)',
+    background: isActive ? 'var(--color-background-secondary)' : 'transparent',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontSize: '14px',
+    fontWeight: 500,
+    color: 'var(--color-text-primary)',
+    transition: 'all 0.2s',
+  });
+
+  const calendarStyle = {
+    background: 'var(--color-background-primary)',
+    border: '0.5px solid var(--color-border-tertiary)',
+    borderRadius: '12px',
+    padding: '16px',
+    marginBottom: '20px',
+  };
+
+  const calendarHeaderStyle = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '16px',
+  };
+
+  const calendarTitleStyle = {
+    fontSize: '16px',
+    fontWeight: '500',
+    color: 'var(--color-text-primary)',
+    margin: 0,
+  };
+
+  const navButtonStyle = {
+    background: 'transparent',
+    border: '0.5px solid var(--color-border-tertiary)',
+    padding: '6px 10px',
+    borderRadius: '6px',
+    cursor: 'pointer',
+    fontSize: '14px',
+  };
+
+  const dayHeaderStyle = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(7, 1fr)',
+    gap: '4px',
+    marginBottom: '12px',
+  };
+
+  const dayLabelStyle = {
+    textAlign: 'center',
+    fontSize: '12px',
+    fontWeight: '500',
+    color: 'var(--color-text-secondary)',
+    padding: '8px 0',
+  };
+
+  const daysGridStyle = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(7, 1fr)',
+    gap: '4px',
+  };
+
+  const dayStyle = (day) => ({
+    aspectRatio: '1',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '8px',
+    fontSize: '14px',
+    cursor: day ? 'pointer' : 'default',
+    background: day && isToday(day) ? 'var(--color-background-info)' : 'transparent',
+    color: day && isToday(day) ? 'var(--color-text-info)' : day ? 'var(--color-text-primary)' : 'var(--color-text-tertiary)',
+    fontWeight: day && isToday(day) ? '600' : '400',
+    opacity: day ? 1 : 0.3,
+  });
+
+  const appointmentStyle = (status) => ({
+    padding: '12px',
+    background: statusColors[status].bg,
+    color: statusColors[status].text,
+    border: `0.5px solid ${statusColors[status].text}40`,
+    borderRadius: '8px',
+    cursor: 'pointer',
+    marginBottom: '8px',
+    transition: 'all 0.2s',
+  });
+
+  const scheduleContainerStyle = {
+    background: 'var(--color-background-primary)',
+    border: '0.5px solid var(--color-border-tertiary)',
+    borderRadius: '12px',
+    padding: '16px',
+    maxHeight: '400px',
+    overflowY: 'auto',
+  };
+
+  const scheduleHeaderStyle = {
+    fontSize: '16px',
+    fontWeight: '500',
+    color: 'var(--color-text-primary)',
+    marginBottom: '12px',
+    margin: 0,
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-8">
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700&family=Outfit:wght@400;500;600&display=swap');
-        body { font-family: 'Outfit', sans-serif; }
-        .heading { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; letter-spacing: -0.5px; }
-        .appointment-slot { transition: all 0.2s ease; animation: slideUp 0.4s ease-out forwards; }
-        .appointment-slot:nth-child(1) { animation-delay: 0.05s; }
-        .appointment-slot:nth-child(2) { animation-delay: 0.1s;  }
-        .appointment-slot:nth-child(3) { animation-delay: 0.15s; }
-        .appointment-slot:nth-child(4) { animation-delay: 0.2s;  }
-        @keyframes slideUp {
-          from { opacity: 0; transform: translateY(16px); }
-          to   { opacity: 1; transform: translateY(0);    }
-        }
-        .appointment-slot:hover { transform: translateX(4px); box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
-        .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease; border-radius: 8px; }
-        .cal-day.other-month { color: rgba(148,163,184,0.3); }
-        .cal-day.today { background: linear-gradient(135deg, rgb(20,184,166), rgb(6,182,212)); color: rgb(15,23,42); font-weight: 600; }
-        .cal-day:not(.other-month):not(.today):hover { background: rgba(20,184,166,0.1); border: 1px solid rgba(20,184,166,0.3); }
-        .modal-enter { animation: modalFadeIn 0.3s ease-out; }
-        @keyframes modalFadeIn {
-          from { opacity: 0; transform: scale(0.95); }
-          to   { opacity: 1; transform: scale(1);    }
-        }
-      `}</style>
-
+    <div style={containerStyle}>
       {!selectedAppointment && !showNewForm ? (
-        <div className="max-w-6xl mx-auto">
-          {/* Header */}
-          <div className="flex items-start justify-between mb-8">
+        <>
+          <div style={headerStyle}>
             <div>
-              <h1 className="heading text-4xl text-white mb-2">Appointments</h1>
-              <p className="text-slate-400">Manage your daily schedule</p>
+              <h1 style={titleStyle}>Appointments</h1>
+              <p style={subtitleStyle}>Manage your daily schedule</p>
             </div>
             <button
               onClick={() => setShowNewForm(true)}
-              className="px-6 py-3 bg-teal-500 hover:bg-teal-600 text-slate-950 rounded-lg font-semibold flex items-center gap-2 transition-all hover:shadow-lg hover:shadow-teal-500/30 transform hover:scale-105"
+              style={{
+                padding: '10px 16px',
+                background: 'var(--color-background-info)',
+                color: 'var(--color-text-info)',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                fontWeight: '500',
+                fontSize: '14px',
+              }}
             >
-              <Plus size={20} /> New Appointment
+              + New Appointment
             </button>
           </div>
 
-          {/* View Toggle */}
-          <div className="flex gap-2 mb-8">
-            {['calendar', 'list'].map(mode => (
+          <div style={buttonGroupStyle}>
+            {['calendar', 'list'].map((mode) => (
               <button
                 key={mode}
                 onClick={() => setViewMode(mode)}
-                className={`px-6 py-3 rounded-lg font-medium transition-all ${
-                  viewMode === mode
-                    ? 'bg-teal-500 text-slate-950 shadow-lg shadow-teal-500/30'
-                    : 'bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-600'
-                }`}
+                style={toggleButtonStyle(viewMode === mode)}
               >
                 {mode === 'calendar' ? '📅 Calendar' : '📋 List'}
               </button>
@@ -101,290 +220,346 @@ export default function Appointments() {
           </div>
 
           {viewMode === 'calendar' ? (
-            <CalendarView
-              currentDate={currentDate}
-              setCurrentDate={setCurrentDate}
-              monthName={monthName}
-              days={days}
-              isToday={isToday}
-              appointments={appointmentsForDate}
-              setSelectedAppointment={setSelectedAppointment}
-            />
+            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '16px' }}>
+              <div style={calendarStyle}>
+                <div style={calendarHeaderStyle}>
+                  <h2 style={calendarTitleStyle}>{monthName}</h2>
+                  <div style={{ display: 'flex', gap: '4px' }}>
+                    <button
+                      onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1))}
+                      style={navButtonStyle}
+                    >
+                      ←
+                    </button>
+                    <button
+                      onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1))}
+                      style={navButtonStyle}
+                    >
+                      →
+                    </button>
+                  </div>
+                </div>
+
+                <div style={dayHeaderStyle}>
+                  {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((d) => (
+                    <div key={d} style={dayLabelStyle}>
+                      {d}
+                    </div>
+                  ))}
+                </div>
+
+                <div style={daysGridStyle}>
+                  {days.map((day, idx) => (
+                    <div key={idx} style={dayStyle(day)}>
+                      {day}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div style={scheduleContainerStyle}>
+                <h3 style={scheduleHeaderStyle}>Today's Schedule</h3>
+                {appointments.map((apt) => (
+                  <div
+                    key={apt.id}
+                    onClick={() => setSelectedAppointment(apt)}
+                    style={{
+                      ...appointmentStyle(apt.status),
+                      fontSize: '13px',
+                    }}
+                  >
+                    <div style={{ fontWeight: '600', marginBottom: '4px' }}>
+                      {statusColors[apt.status].icon} {apt.time}
+                    </div>
+                    <div style={{ fontWeight: '500' }}>{apt.patientName}</div>
+                    <div style={{ fontSize: '12px', opacity: 0.8 }}>{apt.type}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
           ) : (
-            <ListView appointments={appointmentsForDate} setSelectedAppointment={setSelectedAppointment} />
+            <div style={scheduleContainerStyle}>
+              <h3 style={scheduleHeaderStyle}>Schedule for Today</h3>
+              {appointments.map((apt) => (
+                <div
+                  key={apt.id}
+                  onClick={() => setSelectedAppointment(apt)}
+                  style={{
+                    ...appointmentStyle(apt.status),
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '14px',
+                  }}
+                >
+                  <div>
+                    <div style={{ fontWeight: '600', marginBottom: '4px' }}>
+                      {statusColors[apt.status].icon} {apt.time} — {apt.patientName}
+                    </div>
+                    <div style={{ fontSize: '13px', opacity: 0.8 }}>{apt.type}</div>
+                    <div style={{ fontSize: '12px', opacity: 0.7, marginTop: '4px' }}>{apt.notes}</div>
+                  </div>
+                  <span>→</span>
+                </div>
+              ))}
+            </div>
           )}
 
-          {/* Stats */}
-          <div className="mt-12 grid grid-cols-1 md:grid-cols-4 gap-4">
-            {[
-              { label: 'Total Today',  value: appointmentsForDate.length,                                        color: 'text-blue-400'  },
-              { label: 'Waiting',      value: appointmentsForDate.filter(a => a.status === 'waiting').length,     color: 'text-amber-400' },
-              { label: 'In Progress',  value: appointmentsForDate.filter(a => a.status === 'in_progress').length, color: 'text-blue-400'  },
-              { label: 'Completed',    value: appointmentsForDate.filter(a => a.status === 'completed').length,   color: 'text-green-400' },
-            ].map((stat, idx) => (
-              <div key={idx} className="p-4 rounded-lg bg-slate-800/50 border border-slate-700">
-                <p className="text-slate-400 text-sm mb-1">{stat.label}</p>
-                <p className={`heading text-2xl ${stat.color}`}>{stat.value}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      ) : selectedAppointment ? (
-        <AppointmentDetail appointment={selectedAppointment} onBack={() => setSelectedAppointment(null)} />
-      ) : (
-        <NewAppointmentForm onClose={() => setShowNewForm(false)} />
-      )}
-    </div>
-  );
-}
-
-function CalendarView({ currentDate, setCurrentDate, monthName, days, isToday, appointments, setSelectedAppointment }) {
-  return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      {/* Calendar */}
-      <div className="lg:col-span-2 bg-slate-800/30 border border-slate-700 rounded-xl p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="heading text-xl text-white">{monthName}</h2>
-          <div className="flex gap-2">
-            <button onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1))} className="p-2 hover:bg-slate-700 rounded-lg transition">
-              <ChevronLeft size={20} className="text-slate-400" />
-            </button>
-            <button onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1))} className="p-2 hover:bg-slate-700 rounded-lg transition">
-              <ChevronRight size={20} className="text-slate-400" />
-            </button>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-7 gap-2 mb-4">
-          {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-            <div key={day} className="text-center text-slate-400 text-sm font-semibold py-2">{day}</div>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-7 gap-2">
-          {days.map((day, idx) => (
-            <div key={idx} className={`cal-day ${!day ? 'other-month' : ''} ${day && isToday(day) ? 'today' : ''}`}>
-              {day}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Today's Schedule */}
-      <div className="bg-slate-800/30 border border-slate-700 rounded-xl p-6">
-        <h3 className="heading text-lg text-white mb-4">Today's Schedule</h3>
-        <div className="space-y-3">
-          {appointments.map(apt => {
-            const StatusIcon = statusStyles[apt.status].icon;
-            return (
-              <button
-                key={apt.id}
-                onClick={() => setSelectedAppointment(apt)}
-                className={`appointment-slot w-full p-3 rounded-lg border text-left transition-all ${statusStyles[apt.status].bg} ${statusStyles[apt.status].border}`}
-              >
-                <div className="flex items-start justify-between gap-2 mb-2">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <Clock size={14} className={statusStyles[apt.status].text} />
-                    <span className="font-semibold text-white text-sm">{apt.time}</span>
-                  </div>
-                  <StatusIcon size={14} className={statusStyles[apt.status].text} />
-                </div>
-                <p className="text-sm text-white font-medium truncate">{apt.patientName}</p>
-                <p className="text-xs text-slate-300 truncate">{apt.type}</p>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ListView({ appointments, setSelectedAppointment }) {
-  return (
-    <div className="bg-slate-800/30 border border-slate-700 rounded-xl p-6">
-      <h2 className="heading text-xl text-white mb-6">Schedule for Today</h2>
-      <div className="space-y-3">
-        {appointments.map(apt => {
-          const StatusIcon = statusStyles[apt.status].icon;
-          return (
-            <button
-              key={apt.id}
-              onClick={() => setSelectedAppointment(apt)}
-              className={`appointment-slot w-full p-4 rounded-lg border flex items-center justify-between cursor-pointer ${statusStyles[apt.status].bg} ${statusStyles[apt.status].border}`}
-            >
-              <div className="flex items-center gap-4 flex-1 min-w-0">
-                <div className="text-center">
-                  <div className="text-lg font-bold text-white">{apt.time}</div>
-                  <StatusIcon size={16} className={statusStyles[apt.status].text} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-white">{apt.patientName}</h3>
-                  <p className="text-sm text-slate-300">{apt.type}</p>
-                  <p className="text-xs text-slate-400 mt-1">{apt.notes}</p>
-                </div>
-              </div>
-              <ChevronRight className="text-slate-500 flex-shrink-0" size={20} />
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-function AppointmentDetail({ appointment, onBack }) {
-  const [status, setStatus] = useState(appointment.status);
-  const StatusStyle = statusStyles[status];
-  const StatusIcon  = StatusStyle.icon;
-
-  return (
-    <div className="max-w-2xl mx-auto modal-enter">
-      <button onClick={onBack} className="mb-6 px-4 py-2 rounded-lg bg-slate-800/50 border border-slate-700 text-slate-300 hover:bg-slate-700/50 transition-all flex items-center gap-2">
-        ← Back
-      </button>
-
-      <div className="bg-gradient-to-br from-slate-800 to-slate-800/50 border border-slate-700 rounded-xl p-8">
-        <div className="flex items-start justify-between mb-8">
-          <div>
-            <h1 className="heading text-3xl text-white mb-2">{appointment.patientName}</h1>
-            <p className="text-slate-400">{appointment.type}</p>
-          </div>
-          <div className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium ${StatusStyle.bg} ${StatusStyle.text}`}>
-            <StatusIcon size={18} />
-            {StatusStyle.label}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
-            <p className="text-slate-400 text-sm mb-2">Appointment Time</p>
-            <p className="heading text-2xl text-white flex items-center gap-2">
-              <Clock size={24} className="text-teal-400" />
-              {appointment.time}
-            </p>
-          </div>
-          <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
-            <p className="text-slate-400 text-sm mb-2">Appointment Type</p>
-            <p className="heading text-xl text-white">{appointment.type}</p>
-          </div>
-          <div className="md:col-span-2 bg-slate-800/50 rounded-lg p-4 border border-slate-700">
-            <p className="text-slate-400 text-sm mb-2">Notes</p>
-            <p className="text-white leading-relaxed">{appointment.notes}</p>
-          </div>
-        </div>
-
-        <div className="mb-8">
-          <h2 className="heading text-lg text-white mb-4">Update Status</h2>
-          <div className="grid grid-cols-3 gap-3">
-            {Object.entries(statusStyles).map(([key, style]) => (
-              <button
-                key={key}
-                onClick={() => setStatus(key)}
-                className={`p-4 rounded-lg border-2 transition-all font-medium ${
-                  status === key
-                    ? `${style.bg} ${style.border} ${style.text} border-2 transform scale-105`
-                    : 'bg-slate-700/30 border-slate-700 text-slate-400 hover:border-slate-600'
-                }`}
-              >
-                {style.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-3">
-          <button className="flex items-center justify-center gap-2 px-6 py-3 bg-teal-500 hover:bg-teal-600 text-slate-950 rounded-lg font-semibold transition-all">
-            <Edit2 size={18} /> Reschedule
-          </button>
-          <button className="flex items-center justify-center gap-2 px-6 py-3 bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/40 rounded-lg font-semibold transition-all">
-            <Trash2 size={18} /> Cancel
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function NewAppointmentForm({ onClose }) {
-  const [formData, setFormData] = useState({ patientName: '', date: '', time: '', type: 'Consultation', notes: '' });
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onClose();
-  };
-
-  return (
-    <div className="max-w-2xl mx-auto modal-enter">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="heading text-3xl text-white">Schedule New Appointment</h1>
-        <button onClick={onClose} className="p-2 hover:bg-slate-800 rounded-lg transition">
-          <X size={24} className="text-slate-400" />
-        </button>
-      </div>
-
-      <form onSubmit={handleSubmit} className="bg-slate-800/30 border border-slate-700 rounded-xl p-8 space-y-6">
-        <div>
-          <label className="block text-white font-medium mb-2">Patient Name</label>
-          <input
-            type="text" required
-            value={formData.patientName}
-            onChange={(e) => setFormData({ ...formData, patientName: e.target.value })}
-            className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20"
-            placeholder="Patient name..."
-          />
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-white font-medium mb-2">Date</label>
-            <input
-              type="date" required
-              value={formData.date}
-              onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-              className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20"
-            />
-          </div>
-          <div>
-            <label className="block text-white font-medium mb-2">Time</label>
-            <input
-              type="time" required
-              value={formData.time}
-              onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-              className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20"
-            />
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-white font-medium mb-2">Appointment Type</label>
-          <select
-            value={formData.type}
-            onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-            className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20"
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+              gap: '12px',
+              marginTop: '20px',
+            }}
           >
-            <option>Consultation</option>
-            <option>Follow-up</option>
-            <option>Emergency</option>
-            <option>Prenatal</option>
-            <option>Post-operative</option>
-          </select>
-        </div>
-
+            {[
+              { label: 'Total Today', value: appointments.length },
+              { label: 'Waiting', value: appointments.filter((a) => a.status === 'waiting').length },
+              { label: 'In Progress', value: appointments.filter((a) => a.status === 'in_progress').length },
+              { label: 'Completed', value: appointments.filter((a) => a.status === 'completed').length },
+            ].map((stat, idx) => (
+              <div
+                key={idx}
+                style={{
+                  padding: '12px',
+                  background: 'var(--color-background-secondary)',
+                  borderRadius: '8px',
+                  border: '0.5px solid var(--color-border-tertiary)',
+                }}
+              >
+                <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', margin: '0 0 6px 0' }}>
+                  {stat.label}
+                </p>
+                <p style={{ fontSize: '18px', fontWeight: '600', color: 'var(--color-text-primary)', margin: 0 }}>
+                  {stat.value}
+                </p>
+              </div>
+            ))}
+          </div>
+        </>
+      ) : selectedAppointment ? (
         <div>
-          <label className="block text-white font-medium mb-2">Notes</label>
-          <textarea
-            value={formData.notes}
-            onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-            className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 h-24 resize-none"
-            placeholder="Additional notes..."
-          />
-        </div>
+          <button
+            onClick={() => setSelectedAppointment(null)}
+            style={{
+              background: 'transparent',
+              border: '0.5px solid var(--color-border-tertiary)',
+              padding: '8px 12px',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              marginBottom: '16px',
+              fontSize: '14px',
+            }}
+          >
+            ← Back
+          </button>
+          <div
+            style={{
+              background: 'var(--color-background-primary)',
+              border: '0.5px solid var(--color-border-tertiary)',
+              borderRadius: '12px',
+              padding: '20px',
+            }}
+          >
+            <h2 style={{ fontSize: '22px', fontWeight: '600', margin: '0 0 8px 0', color: 'var(--color-text-primary)' }}>
+              {selectedAppointment.patientName}
+            </h2>
+            <p style={{ fontSize: '14px', color: 'var(--color-text-secondary)', margin: '0 0 16px 0' }}>
+              {selectedAppointment.type}
+            </p>
 
-        <button type="submit" className="w-full py-3 bg-teal-500 hover:bg-teal-600 text-slate-950 rounded-lg font-semibold transition-all hover:shadow-lg hover:shadow-teal-500/30">
-          Schedule Appointment
-        </button>
-      </form>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+              <div style={{ background: 'var(--color-background-secondary)', padding: '12px', borderRadius: '8px' }}>
+                <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', margin: '0 0 6px 0' }}>Time</p>
+                <p style={{ fontSize: '18px', fontWeight: '600', margin: 0 }}>{selectedAppointment.time}</p>
+              </div>
+              <div style={{ background: 'var(--color-background-secondary)', padding: '12px', borderRadius: '8px' }}>
+                <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', margin: '0 0 6px 0' }}>Status</p>
+                <p
+                  style={{
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    margin: 0,
+                    color: statusColors[selectedAppointment.status].text,
+                  }}
+                >
+                  {statusColors[selectedAppointment.status].icon} {selectedAppointment.status.replace('_', ' ')}
+                </p>
+              </div>
+            </div>
+
+            <div style={{ background: 'var(--color-background-secondary)', padding: '12px', borderRadius: '8px', marginBottom: '16px' }}>
+              <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', margin: '0 0 6px 0' }}>Notes</p>
+              <p style={{ fontSize: '14px', margin: 0 }}>{selectedAppointment.notes}</p>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+              <button
+                style={{
+                  padding: '10px 16px',
+                  background: 'var(--color-background-info)',
+                  color: 'var(--color-text-info)',
+                  border: 'none',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  fontWeight: '500',
+                  fontSize: '14px',
+                }}
+              >
+                ✏️ Reschedule
+              </button>
+              <button
+                style={{
+                  padding: '10px 16px',
+                  background: 'var(--color-background-danger)',
+                  color: 'var(--color-text-danger)',
+                  border: 'none',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  fontWeight: '500',
+                  fontSize: '14px',
+                }}
+              >
+                🗑️ Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div>
+          <button
+            onClick={() => setShowNewForm(false)}
+            style={{
+              background: 'transparent',
+              border: '0.5px solid var(--color-border-tertiary)',
+              padding: '8px 12px',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              marginBottom: '16px',
+              fontSize: '14px',
+            }}
+          >
+            ← Back
+          </button>
+          <div
+            style={{
+              background: 'var(--color-background-primary)',
+              border: '0.5px solid var(--color-border-tertiary)',
+              borderRadius: '12px',
+              padding: '20px',
+            }}
+          >
+            <h2 style={{ fontSize: '22px', fontWeight: '600', margin: '0 0 16px 0' }}>Schedule New Appointment</h2>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                setShowNewForm(false);
+              }}
+              style={{ display: 'grid', gap: '12px' }}
+            >
+              <div>
+                <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '6px' }}>
+                  Patient Name
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter patient name..."
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    border: '0.5px solid var(--color-border-tertiary)',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    boxSizing: 'border-box',
+                  }}
+                />
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '6px' }}>Date</label>
+                  <input
+                    type="date"
+                    style={{
+                      width: '100%',
+                      padding: '10px 12px',
+                      border: '0.5px solid var(--color-border-tertiary)',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                      boxSizing: 'border-box',
+                    }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '6px' }}>Time</label>
+                  <input
+                    type="time"
+                    style={{
+                      width: '100%',
+                      padding: '10px 12px',
+                      border: '0.5px solid var(--color-border-tertiary)',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                      boxSizing: 'border-box',
+                    }}
+                  />
+                </div>
+              </div>
+              <div>
+                <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '6px' }}>
+                  Appointment Type
+                </label>
+                <select
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    border: '0.5px solid var(--color-border-tertiary)',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    boxSizing: 'border-box',
+                  }}
+                >
+                  <option>Consultation</option>
+                  <option>Follow-up</option>
+                  <option>Emergency</option>
+                  <option>Prenatal</option>
+                </select>
+              </div>
+              <div>
+                <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '6px' }}>Notes</label>
+                <textarea
+                  placeholder="Additional notes..."
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    border: '0.5px solid var(--color-border-tertiary)',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    minHeight: '80px',
+                    boxSizing: 'border-box',
+                  }}
+                />
+              </div>
+              <button
+                type="submit"
+                style={{
+                  padding: '10px 16px',
+                  background: 'var(--color-background-info)',
+                  color: 'var(--color-text-info)',
+                  border: 'none',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  fontWeight: '600',
+                  fontSize: '14px',
+                  marginTop: '8px',
+                }}
+              >
+                Schedule Appointment
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

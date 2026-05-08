@@ -1,56 +1,66 @@
 import { useState } from 'react';
-import { AlertCircle, CheckCircle, Clock, X, Flag, MessageSquare, Link as LinkIcon, Eye, Download, FileText } from 'lucide-react';
+import {
+  AlertCircle, Clock, X, Flag, MessageSquare,
+  Link as LinkIcon, Download, Search, Bell,
+  ChevronRight, FlaskConical
+} from 'lucide-react';
 
 const mockLabResults = [
   {
-    id: 1, patientName: 'Ahmed Hassan', testName: 'Complete Blood Count (CBC)',
-    result: 'Abnormal', status: 'pending', date: '2024-01-17', flagged: false,
-    comments: [],
+    id: 1, patientName: 'Ahmed Hassan', patientAge: '45y old', initials: 'AH', color: '#6366f1',
+    testName: 'Complete Blood Count (CBC)', result: 'Abnormal', status: 'pending',
+    date: '2024-01-17', flagged: false, comments: [],
     values: { WBC: '7.2 k/uL', RBC: '4.8 M/uL', Hemoglobin: '14.2 g/dL', Hematocrit: '42%' }
   },
   {
-    id: 2, patientName: 'Fatima Al-Rashid', testName: 'Troponin T',
-    result: 'High', status: 'critical', date: '2024-01-17', flagged: true,
+    id: 2, patientName: 'Fatima Al-Rashid', patientAge: '29y old', initials: 'FA', color: '#ec4899',
+    testName: 'Troponin T', result: 'High', status: 'critical', date: '2024-01-17', flagged: true,
     comments: [{ author: 'Dr. Khalil', text: 'Elevated levels - urgent consultation required' }],
     values: { TroponinT: '0.45 ng/mL', normalRange: '< 0.04 ng/mL' }
   },
   {
-    id: 3, patientName: 'Mohammad Khan', testName: 'Chest X-Ray',
-    result: 'Normal', status: 'reviewed', date: '2024-01-16', flagged: false,
+    id: 3, patientName: 'Mohammad Khan', patientAge: '52y old', initials: 'MK', color: '#0ea5e9',
+    testName: 'Chest X-Ray', result: 'Normal', status: 'reviewed', date: '2024-01-16', flagged: false,
     comments: [{ author: 'Radiologist', text: 'No acute findings' }],
     values: { findings: 'Clear bilateral lungs', impression: 'Consistent with clinical recovery' }
   },
   {
-    id: 4, patientName: 'Layla Mansouri', testName: 'Glucose Tolerance Test',
-    result: 'Normal', status: 'reviewed', date: '2024-01-16', flagged: false,
+    id: 4, patientName: 'Layla Mansouri', patientAge: '34y old', initials: 'LM', color: '#10b981',
+    testName: 'Glucose Tolerance Test', result: 'Normal', status: 'reviewed', date: '2024-01-16', flagged: false,
     comments: [],
     values: { fasting: '95 mg/dL', '2hour': '110 mg/dL' }
   },
   {
-    id: 5, patientName: 'Hassan Ibrahim', testName: 'Vision Test',
-    result: 'Normal', status: 'reviewed', date: '2024-01-15', flagged: false,
+    id: 5, patientName: 'Hassan Ibrahim', patientAge: '61y old', initials: 'HI', color: '#f59e0b',
+    testName: 'Vision Test', result: 'Normal', status: 'reviewed', date: '2024-01-15', flagged: false,
     comments: [{ author: 'Optometrist', text: 'Vision 20/20 post-surgery' }],
     values: { leftEye: '20/20', rightEye: '20/20' }
   },
   {
-    id: 6, patientName: 'Noor Al-Mansouri', testName: 'Spirometry (Lung Function)',
-    result: 'Abnormal', status: 'pending', date: '2024-01-17', flagged: true,
+    id: 6, patientName: 'Noor Al-Mansouri', patientAge: '38y old', initials: 'NA', color: '#8b5cf6',
+    testName: 'Spirometry (Lung Function)', result: 'Abnormal', status: 'pending', date: '2024-01-17', flagged: true,
     comments: [],
     values: { FEV1: '62% predicted', FVC: '68% predicted', ratio: '91%' }
   }
 ];
 
-const statusStyles = {
-  pending:  { bg: 'bg-amber-500/20', text: 'text-amber-300', border: 'border-amber-500/40', label: 'Pending',  icon: Clock        },
-  reviewed: { bg: 'bg-blue-500/20',  text: 'text-blue-300',  border: 'border-blue-500/40',  label: 'Reviewed', icon: CheckCircle  },
-  critical: { bg: 'bg-red-500/20',   text: 'text-red-300',   border: 'border-red-500/40',   label: 'Critical', icon: AlertCircle  },
+const statusConfig = {
+  pending:  { bg: '#fffbeb', text: '#d97706', border: '#fde68a', dot: '#f59e0b', label: 'Pending' },
+  reviewed: { bg: '#eff6ff', text: '#2563eb', border: '#bfdbfe', dot: '#3b82f6', label: 'Reviewed' },
+  critical: { bg: '#fff1f2', text: '#e11d48', border: '#fecdd3', dot: '#f43f5e', label: 'Critical' },
+};
+
+const resultConfig = {
+  Normal:   { text: '#059669', bg: '#ecfdf5' },
+  Abnormal: { text: '#d97706', bg: '#fffbeb' },
+  High:     { text: '#e11d48', bg: '#fff1f2' },
 };
 
 export default function LabResults() {
-  const [searchTerm, setSearchTerm]       = useState('');
+  const [searchTerm, setSearchTerm]         = useState('');
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [selectedReport, setSelectedReport] = useState(null);
-  const [labs, setLabs]                   = useState(mockLabResults);
+  const [labs, setLabs]                     = useState(mockLabResults);
 
   const filteredLabs = labs.filter(lab => {
     const matchesSearch =
@@ -60,235 +70,309 @@ export default function LabResults() {
     return matchesSearch && matchesStatus;
   });
 
-  const toggleFlag = (id) => setLabs(labs.map(lab => lab.id === id ? { ...lab, flagged: !lab.flagged } : lab));
+  const toggleFlag = (id) => {
+    setLabs(prev => prev.map(lab => lab.id === id ? { ...lab, flagged: !lab.flagged } : lab));
+    setSelectedReport(prev => prev?.id === id ? { ...prev, flagged: !prev.flagged } : prev);
+  };
+
+  const addComment = (id, comment) => {
+    setLabs(prev => prev.map(lab =>
+      lab.id === id ? { ...lab, comments: [...lab.comments, comment] } : lab
+    ));
+    setSelectedReport(prev =>
+      prev?.id === id ? { ...prev, comments: [...prev.comments, comment] } : prev
+    );
+  };
+
+  const stats = [
+    { label: 'Total Tests',      value: labs.length,                                      sub: 'This week',        icon: FlaskConical, accent: '#0d9488' },
+    { label: 'Pending Review',   value: labs.filter(l => l.status === 'pending').length,  sub: 'Awaiting action',  icon: Clock,        accent: '#d97706' },
+    { label: 'Flagged',          value: labs.filter(l => l.flagged).length,               sub: 'Needs attention',  icon: Flag,         accent: '#e11d48' },
+    { label: 'Critical Results', value: labs.filter(l => l.status === 'critical').length, sub: 'Urgent review',    icon: AlertCircle,  accent: '#e11d48' },
+  ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-8">
+    <div style={{ fontFamily: "'DM Sans', sans-serif", background: '#f8fafc', minHeight: '100vh' }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700&family=Outfit:wght@400;500;600&display=swap');
-        body { font-family: 'Outfit', sans-serif; }
-        .heading { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; letter-spacing: -0.5px; }
-        .lab-card { transition: all 0.3s cubic-bezier(0.4,0,0.2,1); animation: slideIn 0.5s ease-out forwards; }
-        .lab-card:nth-child(1) { animation-delay: 0.05s; }
-        .lab-card:nth-child(2) { animation-delay: 0.1s;  }
-        .lab-card:nth-child(3) { animation-delay: 0.15s; }
-        .lab-card:nth-child(4) { animation-delay: 0.2s;  }
-        .lab-card:nth-child(5) { animation-delay: 0.25s; }
-        .lab-card:nth-child(6) { animation-delay: 0.3s;  }
-        @keyframes slideIn {
-          from { opacity: 0; transform: translateY(12px); }
-          to   { opacity: 1; transform: translateY(0);    }
-        }
-        .lab-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.5); }
-        .modal-fade { animation: fadeIn 0.3s ease-out; }
-        @keyframes fadeIn {
-          from { opacity: 0; transform: scale(0.95); }
-          to   { opacity: 1; transform: scale(1);    }
-        }
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap');
+        * { box-sizing: border-box; }
+
+        .lab-row { transition: background 0.15s ease; }
+        .lab-row:hover { background: #f8fafc !important; }
+        .lab-row:hover .row-arrow { opacity: 1 !important; transform: translateX(2px); }
+        .row-arrow { opacity: 0; transition: all 0.2s ease; color: #0d9488; }
+
+        .stat-card { transition: box-shadow 0.2s, transform 0.2s; }
+        .stat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.10) !important; }
+
+        .tab-pill { transition: all 0.15s ease; cursor: pointer; border: none; font-family: 'DM Sans', sans-serif; }
+
+        .modal-overlay { animation: overlayIn 0.2s ease; }
+        .modal-card   { animation: modalIn 0.25s cubic-bezier(0.34,1.56,0.64,1); }
+        @keyframes overlayIn { from { opacity: 0 } to { opacity: 1 } }
+        @keyframes modalIn   { from { opacity: 0; transform: translateY(16px) scale(0.97) } to { opacity: 1; transform: translateY(0) scale(1) } }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
       `}</style>
 
-      {!selectedReport ? (
-        <div className="max-w-6xl mx-auto">
-          <div className="mb-8">
-            <h1 className="heading text-4xl text-white mb-2">Lab Results</h1>
-            <p className="text-slate-400">View and manage all laboratory test results</p>
+      {/* Top Nav */}
+      <div style={{ background: 'white', borderBottom: '1px solid #e2e8f0', padding: '0 32px', height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 40 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{ width: 32, height: 32, background: '#0d9488', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <FlaskConical size={18} color="white" />
           </div>
+          <span style={{ fontWeight: 600, fontSize: 16, color: '#0f172a' }}>Lab Results</span>
+        </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <div className="md:col-span-2 relative group">
-              <FileText className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-teal-400 transition-colors" size={20} />
-              <input
-                type="text" placeholder="Search by patient name or test type..."
-                value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 bg-slate-800/50 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 transition-all"
-              />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+            <Search size={16} style={{ position: 'absolute', left: 12, color: '#94a3b8', pointerEvents: 'none' }} />
+            <input
+              placeholder="Search patients, records..."
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              style={{ paddingLeft: 36, paddingRight: 16, paddingTop: 9, paddingBottom: 9, background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 10, fontSize: 14, color: '#0f172a', outline: 'none', width: 260, fontFamily: 'DM Sans, sans-serif' }}
+            />
+          </div>
+          <button style={{ width: 40, height: 40, borderRadius: 10, border: '1px solid #e2e8f0', background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', position: 'relative' }}>
+            <Bell size={18} color="#64748b" />
+            <span style={{ position: 'absolute', top: 8, right: 8, width: 8, height: 8, background: '#e11d48', borderRadius: '50%', border: '2px solid white' }} />
+          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '6px 12px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 10, cursor: 'pointer' }}>
+            <div style={{ width: 30, height: 30, background: '#0d9488', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 600, color: 'white' }}>AK</div>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 600, color: '#0f172a', lineHeight: 1.2 }}>Dr. Khalil</div>
+              <div style={{ fontSize: 11, color: '#64748b' }}>Cardiologist</div>
             </div>
-            <div className="flex gap-2 flex-wrap">
-              {['all', 'pending', 'reviewed', 'critical'].map(status => (
-                <button key={status} onClick={() => setSelectedStatus(status)}
-                  className={`px-4 py-3 rounded-lg font-medium text-sm transition-all flex-1 md:flex-none ${
-                    selectedStatus === status
-                      ? 'bg-teal-500 text-slate-950 shadow-lg shadow-teal-500/30'
-                      : 'bg-slate-800 text-slate-300 border border-slate-700 hover:border-slate-600'
-                  }`}>
-                  {status.charAt(0).toUpperCase() + status.slice(1)}
+          </div>
+        </div>
+      </div>
+
+      <div style={{ padding: '32px', maxWidth: 1280, margin: '0 auto' }}>
+
+        {/* Page header */}
+        <div style={{ marginBottom: 28 }}>
+          <p style={{ fontSize: 13, color: '#64748b', marginBottom: 4 }}>Friday, 8 May 2026</p>
+          <h1 style={{ fontSize: 26, fontWeight: 600, color: '#0f172a', fontFamily: 'DM Serif Display, serif', margin: 0 }}>Lab Results</h1>
+          <p style={{ fontSize: 14, color: '#64748b', marginTop: 4 }}>View and manage all laboratory test results</p>
+        </div>
+
+        {/* Stat cards */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 28 }}>
+          {stats.map((s, i) => {
+            const Icon = s.icon;
+            return (
+              <div key={i} className="stat-card" style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: 14, padding: '20px 22px', boxShadow: '0 1px 4px rgba(0,0,0,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <div>
+                  <p style={{ fontSize: 13, color: '#64748b', marginBottom: 6 }}>{s.label}</p>
+                  <p style={{ fontSize: 32, fontWeight: 700, color: '#0f172a', lineHeight: 1, marginBottom: 6 }}>{s.value}</p>
+                  <p style={{ fontSize: 12, color: '#94a3b8' }}>{s.sub}</p>
+                </div>
+                <div style={{ width: 42, height: 42, borderRadius: 12, background: s.accent + '14', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <Icon size={20} color={s.accent} />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Main table */}
+        <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: 16, boxShadow: '0 1px 4px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
+
+          {/* Table toolbar */}
+          <div style={{ padding: '18px 24px', borderBottom: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontSize: 15, fontWeight: 600, color: '#0f172a' }}>All Results</span>
+              <span style={{ fontSize: 12, color: '#94a3b8', background: '#f1f5f9', padding: '2px 8px', borderRadius: 20 }}>{filteredLabs.length} records</span>
+            </div>
+            <div style={{ display: 'flex', gap: 6 }}>
+              {['all', 'pending', 'reviewed', 'critical'].map(s => (
+                <button key={s} className="tab-pill" onClick={() => setSelectedStatus(s)}
+                  style={{
+                    padding: '7px 16px', borderRadius: 8, fontSize: 13, fontWeight: 500,
+                    background: selectedStatus === s ? '#0d9488' : 'white',
+                    color: selectedStatus === s ? 'white' : '#64748b',
+                    border: selectedStatus === s ? '1px solid #0d9488' : '1px solid #e2e8f0',
+                  }}>
+                  {s.charAt(0).toUpperCase() + s.slice(1)}
                 </button>
               ))}
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-            {filteredLabs.length === 0 ? (
-              <div className="col-span-full text-center py-16">
-                <FileText size={48} className="mx-auto text-slate-600 mb-4 opacity-50" />
-                <p className="text-slate-400 text-lg">No lab results found</p>
-              </div>
-            ) : (
-              filteredLabs.map((lab) => {
-                const style = statusStyles[lab.status];
-                const StatusIcon = style.icon;
-                return (
-                  <div key={lab.id} className={`lab-card p-6 rounded-xl border cursor-pointer transition-all group ${style.bg} ${style.border}`}>
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <h3 className="heading text-lg text-white font-semibold">{lab.testName}</h3>
-                          {lab.flagged && <Flag size={16} className="text-red-400 fill-red-400" />}
-                        </div>
-                        <p className="text-slate-300 text-sm">{lab.patientName}</p>
-                      </div>
-                      <StatusIcon size={20} className={style.text} />
-                    </div>
-
-                    <div className="mb-4 p-3 bg-slate-800/30 rounded-lg">
-                      <p className="text-slate-400 text-xs mb-1">Result</p>
-                      <p className={`heading text-lg font-bold ${
-                        lab.result === 'Normal' ? 'text-green-400' : lab.result === 'Abnormal' ? 'text-amber-400' : 'text-red-400'
-                      }`}>{lab.result}</p>
-                    </div>
-
-                    <div className="flex items-center justify-between text-xs text-slate-400 mb-4">
-                      <span>{lab.date}</span>
-                      <span className="flex items-center gap-1"><MessageSquare size={14} /> {lab.comments.length}</span>
-                    </div>
-
-                    <div className="flex gap-2">
-                      <button onClick={() => setSelectedReport(lab)}
-                        className="flex-1 px-3 py-2 rounded-lg bg-teal-500/20 hover:bg-teal-500/30 text-teal-300 border border-teal-500/40 font-medium text-sm transition-all flex items-center justify-center gap-1">
-                        <Eye size={14} /> View
-                      </button>
-                      <button onClick={() => toggleFlag(lab.id)}
-                        className={`px-3 py-2 rounded-lg font-medium text-sm transition-all ${
-                          lab.flagged
-                            ? 'bg-red-500/20 text-red-300 border border-red-500/40'
-                            : 'bg-slate-700/30 text-slate-400 border border-slate-700 hover:bg-slate-700/50'
-                        }`}>
-                        <Flag size={14} className={lab.flagged ? 'fill-current' : ''} />
-                      </button>
-                    </div>
-                  </div>
-                );
-              })
-            )}
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            {[
-              { label: 'Total Tests',      value: labs.length,                                        color: 'text-blue-400'  },
-              { label: 'Pending Review',   value: labs.filter(l => l.status === 'pending').length,    color: 'text-amber-400' },
-              { label: 'Flagged',          value: labs.filter(l => l.flagged).length,                 color: 'text-red-400'   },
-              { label: 'Critical Results', value: labs.filter(l => l.status === 'critical').length,   color: 'text-red-500'   },
-            ].map((stat, idx) => (
-              <div key={idx} className="p-4 rounded-lg bg-slate-800/50 border border-slate-700">
-                <p className="text-slate-400 text-sm mb-1">{stat.label}</p>
-                <p className={`heading text-2xl ${stat.color}`}>{stat.value}</p>
-              </div>
+          {/* Column headers */}
+          <div style={{ display: 'grid', gridTemplateColumns: '180px 1fr 120px 110px 100px 110px 40px', padding: '10px 24px', background: '#f8fafc', borderBottom: '1px solid #f1f5f9' }}>
+            {['PATIENT', 'TEST NAME', 'VISIT TYPE', 'DATE', 'RESULT', 'STATUS', ''].map((h, i) => (
+              <span key={i} style={{ fontSize: 11, fontWeight: 600, color: '#94a3b8', letterSpacing: '0.06em' }}>{h}</span>
             ))}
           </div>
+
+          {/* Rows */}
+          {filteredLabs.length === 0 ? (
+            <div style={{ padding: '64px 24px', textAlign: 'center' }}>
+              <FlaskConical size={40} color="#cbd5e1" style={{ margin: '0 auto 12px', display: 'block' }} />
+              <p style={{ color: '#94a3b8', fontSize: 15 }}>No lab results found</p>
+            </div>
+          ) : (
+            filteredLabs.map((lab, idx) => {
+              const sc = statusConfig[lab.status];
+              const rc = resultConfig[lab.result] || resultConfig['Normal'];
+              return (
+                <div key={lab.id} className="lab-row"
+                  style={{ display: 'grid', gridTemplateColumns: '180px 1fr 120px 110px 100px 110px 40px', padding: '14px 24px', borderBottom: idx < filteredLabs.length - 1 ? '1px solid #f1f5f9' : 'none', alignItems: 'center', background: 'white', cursor: 'pointer' }}
+                  onClick={() => setSelectedReport(lab)}>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <div style={{ width: 34, height: 34, borderRadius: '50%', background: lab.color + '20', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 600, color: lab.color, flexShrink: 0 }}>
+                      {lab.initials}
+                    </div>
+                    <div>
+                      <p style={{ fontSize: 13, fontWeight: 600, color: '#0f172a', lineHeight: 1.3, margin: 0 }}>{lab.patientName}</p>
+                      <p style={{ fontSize: 11, color: '#94a3b8', margin: 0 }}>{lab.patientAge}</p>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <span style={{ fontSize: 13, color: '#334155', fontWeight: 500 }}>{lab.testName}</span>
+                    {lab.flagged && <Flag size={12} color="#e11d48" fill="#e11d48" />}
+                    {lab.comments.length > 0 && (
+                      <span style={{ display: 'flex', alignItems: 'center', gap: 3, fontSize: 11, color: '#94a3b8' }}>
+                        <MessageSquare size={11} />{lab.comments.length}
+                      </span>
+                    )}
+                  </div>
+
+                  <span style={{ fontSize: 13, color: '#64748b' }}>Lab Test</span>
+                  <span style={{ fontSize: 13, color: '#64748b' }}>{lab.date}</span>
+
+                  <span style={{ fontSize: 12, fontWeight: 600, color: rc.text, background: rc.bg, padding: '3px 10px', borderRadius: 20, display: 'inline-block', width: 'fit-content' }}>
+                    {lab.result}
+                  </span>
+
+                  <span style={{ fontSize: 12, fontWeight: 500, color: sc.text, background: sc.bg, padding: '4px 10px', borderRadius: 20, display: 'inline-flex', alignItems: 'center', gap: 5, width: 'fit-content', whiteSpace: 'nowrap' }}>
+                    <span style={{ width: 6, height: 6, borderRadius: '50%', background: sc.dot, flexShrink: 0 }} />
+                    {sc.label}
+                  </span>
+
+                  <div style={{ display: 'flex', justifyContent: 'center' }}>
+                    <div style={{ width: 28, height: 28, borderRadius: 8, border: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }} className="row-arrow">
+                      <ChevronRight size={14} />
+                    </div>
+                  </div>
+                </div>
+              );
+            })
+          )}
         </div>
-      ) : (
-        <ViewReportModal report={selectedReport} onClose={() => setSelectedReport(null)} onToggleFlag={toggleFlag} />
+      </div>
+
+      {selectedReport && (
+        <ReportModal
+          report={selectedReport}
+          onClose={() => setSelectedReport(null)}
+          onToggleFlag={toggleFlag}
+          onAddComment={addComment}
+        />
       )}
     </div>
   );
 }
 
-function ViewReportModal({ report, onClose, onToggleFlag }) {
+function ReportModal({ report, onClose, onToggleFlag, onAddComment }) {
   const [newComment, setNewComment] = useState('');
-  const [comments, setComments]     = useState(report.comments);
-  const style = statusStyles[report.status];
+  const sc = statusConfig[report.status];
+  const rc = resultConfig[report.result] || resultConfig['Normal'];
 
-  const handleAddComment = () => {
+  const handleAdd = () => {
     if (newComment.trim()) {
-      setComments([...comments, { author: 'Dr. Khalil', text: newComment }]);
+      onAddComment(report.id, { author: 'Dr. Khalil', text: newComment });
       setNewComment('');
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-      <div className="bg-slate-800 border border-slate-700 rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto modal-fade">
-        <div className={`sticky top-0 p-6 border-b border-slate-700 flex items-start justify-between ${style.bg}`}>
-          <div>
-            <h2 className="heading text-2xl text-white mb-1">{report.testName}</h2>
-            <p className="text-slate-300">{report.patientName}</p>
+    <div className="modal-overlay"
+      style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 50, padding: 20 }}
+      onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
+
+      <div className="modal-card" style={{ background: 'white', borderRadius: 20, width: '100%', maxWidth: 540, maxHeight: '90vh', overflowY: 'auto', boxShadow: '0 24px 64px rgba(0,0,0,0.15)' }}>
+
+        <div style={{ padding: '20px 24px', borderBottom: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, background: 'white', borderRadius: '20px 20px 0 0', zIndex: 2 }}>
+          <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+            <div style={{ width: 42, height: 42, borderRadius: '50%', background: report.color + '20', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700, color: report.color }}>
+              {report.initials}
+            </div>
+            <div>
+              <h2 style={{ fontSize: 15, fontWeight: 600, color: '#0f172a', margin: 0 }}>{report.testName}</h2>
+              <p style={{ fontSize: 13, color: '#64748b', margin: 0 }}>{report.patientName} · {report.patientAge}</p>
+            </div>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-slate-700 rounded-lg transition text-slate-400 hover:text-white">
-            <X size={24} />
+          <button onClick={onClose} style={{ width: 34, height: 34, borderRadius: 10, border: '1px solid #e2e8f0', background: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#64748b' }}>
+            <X size={16} />
           </button>
         </div>
 
-        <div className="p-6 space-y-6">
-          <div className="grid grid-cols-2 gap-4">
-            <div className={`p-4 rounded-lg ${style.bg} ${style.border} border`}>
-              <p className="text-slate-400 text-sm mb-2">Status</p>
-              <p className={`heading text-lg ${style.text}`}>{style.label}</p>
-            </div>
-            <div className="p-4 bg-slate-700/30 rounded-lg border border-slate-700">
-              <p className="text-slate-400 text-sm mb-2">Test Date</p>
-              <p className="text-white font-semibold">{report.date}</p>
-            </div>
-          </div>
+        <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 20 }}>
 
-          <div className="p-4 rounded-lg bg-slate-700/20 border border-slate-700">
-            <p className="text-slate-400 text-sm mb-2">Overall Result</p>
-            <p className={`heading text-2xl font-bold ${
-              report.result === 'Normal' ? 'text-green-400' : report.result === 'Abnormal' ? 'text-amber-400' : 'text-red-400'
-            }`}>{report.result}</p>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12 }}>
+            {[
+              { label: 'STATUS',  content: <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span style={{ width: 8, height: 8, borderRadius: '50%', background: sc.dot }} /><span style={{ fontSize: 14, fontWeight: 600, color: sc.text }}>{sc.label}</span></span>, bg: sc.bg, border: sc.border },
+              { label: 'RESULT',  content: <span style={{ fontSize: 14, fontWeight: 600, color: rc.text }}>{report.result}</span>, bg: rc.bg, border: '#e2e8f0' },
+              { label: 'DATE',    content: <span style={{ fontSize: 14, fontWeight: 600, color: '#334155' }}>{report.date}</span>, bg: '#f8fafc', border: '#e2e8f0' },
+            ].map((item, i) => (
+              <div key={i} style={{ background: item.bg, border: `1px solid ${item.border}`, borderRadius: 12, padding: '14px 16px' }}>
+                <p style={{ fontSize: 11, fontWeight: 600, color: '#94a3b8', marginBottom: 8, letterSpacing: '0.05em' }}>{item.label}</p>
+                {item.content}
+              </div>
+            ))}
           </div>
 
           <div>
-            <h3 className="heading text-lg text-white mb-3">Test Values</h3>
-            <div className="space-y-2">
-              {Object.entries(report.values).map(([key, value]) => (
-                <div key={key} className="flex justify-between items-center p-3 bg-slate-700/20 rounded-lg border border-slate-700">
-                  <span className="text-slate-300">{key}</span>
-                  <span className="font-semibold text-white">{value}</span>
+            <p style={{ fontSize: 13, fontWeight: 600, color: '#0f172a', marginBottom: 10 }}>Test Values</p>
+            <div style={{ border: '1px solid #f1f5f9', borderRadius: 12, overflow: 'hidden' }}>
+              {Object.entries(report.values).map(([key, value], i, arr) => (
+                <div key={key} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '11px 16px', borderBottom: i < arr.length - 1 ? '1px solid #f1f5f9' : 'none', background: i % 2 === 0 ? 'white' : '#fafafa' }}>
+                  <span style={{ fontSize: 13, color: '#64748b' }}>{key}</span>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: '#0f172a' }}>{value}</span>
                 </div>
               ))}
             </div>
           </div>
 
           <div>
-            <h3 className="heading text-lg text-white mb-3">Comments & Notes</h3>
-            <div className="space-y-3 mb-4 max-h-48 overflow-y-auto">
-              {comments.length === 0 ? (
-                <p className="text-slate-400 text-sm italic">No comments yet</p>
-              ) : (
-                comments.map((comment, idx) => (
-                  <div key={idx} className="p-3 bg-slate-700/30 rounded-lg border border-slate-700">
-                    <p className="text-sm font-semibold text-teal-400 mb-1">{comment.author}</p>
-                    <p className="text-slate-300">{comment.text}</p>
+            <p style={{ fontSize: 13, fontWeight: 600, color: '#0f172a', marginBottom: 10 }}>Comments & Notes</p>
+            {report.comments.length === 0 && <p style={{ fontSize: 13, color: '#94a3b8', fontStyle: 'italic', marginBottom: 12 }}>No comments yet</p>}
+            {report.comments.length > 0 && (
+              <div style={{ marginBottom: 12, display: 'flex', flexDirection: 'column', gap: 8, maxHeight: 160, overflowY: 'auto' }}>
+                {report.comments.map((c, i) => (
+                  <div key={i} style={{ background: '#f8fafc', border: '1px solid #f1f5f9', borderRadius: 10, padding: '12px 14px' }}>
+                    <p style={{ fontSize: 12, fontWeight: 600, color: '#0d9488', marginBottom: 4 }}>{c.author}</p>
+                    <p style={{ fontSize: 13, color: '#334155' }}>{c.text}</p>
                   </div>
-                ))
-              )}
-            </div>
-            <div className="space-y-2">
-              <textarea value={newComment} onChange={(e) => setNewComment(e.target.value)}
-                className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 text-sm resize-none h-20"
-                placeholder="Add a comment..." />
-              <button onClick={handleAddComment}
-                className="px-4 py-2 bg-teal-500 hover:bg-teal-600 text-slate-950 rounded-lg font-semibold transition-all text-sm">
-                Add Comment
-              </button>
-            </div>
+                ))}
+              </div>
+            )}
+            <textarea value={newComment} onChange={e => setNewComment(e.target.value)} placeholder="Add a comment..."
+              style={{ width: '100%', padding: '12px 14px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 10, fontSize: 13, color: '#0f172a', resize: 'none', height: 76, outline: 'none', fontFamily: 'DM Sans, sans-serif', marginBottom: 8, display: 'block' }} />
+            <button onClick={handleAdd}
+              style={{ padding: '9px 18px', background: '#0d9488', color: 'white', borderRadius: 9, border: 'none', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'DM Sans, sans-serif' }}>
+              Add Comment
+            </button>
           </div>
 
-          <div className="flex gap-3 pt-6 border-t border-slate-700">
+          <div style={{ display: 'flex', gap: 10, paddingTop: 8, borderTop: '1px solid #f1f5f9' }}>
             <button onClick={() => onToggleFlag(report.id)}
-              className={`flex-1 px-4 py-3 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 ${
-                report.flagged
-                  ? 'bg-red-500/20 text-red-300 border border-red-500/40 hover:bg-red-500/30'
-                  : 'bg-slate-700 text-slate-300 border border-slate-600 hover:bg-slate-600'
-              }`}>
-              <Flag size={18} className={report.flagged ? 'fill-current' : ''} />
+              style={{ flex: 1, padding: '10px 0', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'DM Sans, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, background: report.flagged ? '#fff1f2' : 'white', color: report.flagged ? '#e11d48' : '#64748b', border: report.flagged ? '1px solid #fecdd3' : '1px solid #e2e8f0' }}>
+              <Flag size={14} fill={report.flagged ? '#e11d48' : 'none'} stroke={report.flagged ? '#e11d48' : 'currentColor'} />
               {report.flagged ? 'Unflag' : 'Flag for Review'}
             </button>
-            <button className="flex-1 px-4 py-3 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg font-semibold border border-slate-600 transition-all flex items-center justify-center gap-2">
-              <Download size={18} /> Download
+            <button style={{ flex: 1, padding: '10px 0', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'DM Sans, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, background: 'white', color: '#64748b', border: '1px solid #e2e8f0' }}>
+              <Download size={14} /> Download
             </button>
-            <button className="flex-1 px-4 py-3 bg-teal-500/20 hover:bg-teal-500/30 text-teal-300 rounded-lg font-semibold border border-teal-500/40 transition-all flex items-center justify-center gap-2">
-              <LinkIcon size={18} /> Link to Patient
+            <button style={{ flex: 1, padding: '10px 0', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'DM Sans, sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, background: '#f0fdfa', color: '#0d9488', border: '1px solid #99f6e4' }}>
+              <LinkIcon size={14} /> Link to Patient
             </button>
           </div>
         </div>

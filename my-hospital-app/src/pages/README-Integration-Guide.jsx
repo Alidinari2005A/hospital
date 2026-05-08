@@ -31,11 +31,11 @@ export default function DashboardApp() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+    <div className="min-h-screen bg-linear-to-br from-slate-950 via-slate-900 to-slate-950">
       <nav className="sticky top-0 z-40 bg-slate-800/50 border-b border-slate-700 backdrop-blur">
         <div className="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-teal-500 to-cyan-500 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-lg bg-linear-to-br from-teal-500 to-cyan-500 flex items-center justify-center">
               <span className="text-slate-950 font-bold text-lg">DK</span>
             </div>
             <div>
@@ -138,7 +138,7 @@ function Dashboard({ setCurrentPage }) {
             key={idx}
             onClick={() => setCurrentPage(card.id)}
             // FIXED: 'card.color' is now used to apply the gradient style
-            className={`p-6 rounded-xl bg-gradient-to-br ${card.color} border border-white/10 hover:opacity-90 transition-all hover:transform hover:scale-105 text-left group`}
+            className={`p-6 rounded-xl bg-linear-to-br ${card.color} border border-white/10 hover:opacity-90 transition-all hover:transform hover:scale-105 text-left group`}
           >
             <p className="text-white/70 text-sm mb-2">{card.label}</p>
             <p className="text-3xl font-bold text-white">{card.value}</p>

@@ -1,11 +1,11 @@
 import { useState } from 'react';
 // Imports from your 'pages' folder
-import MyPatients from "./pages/01-MyPatients";
-import Appointments from "./pages/02-Appointments";
-import LabResults from "./pages/03-LabResults";
-import Prescriptions from "./pages/04-Prescriptions";
-import Messages from "./pages/05-Messages";
-import Analytics from "./pages/06-Analytics";
+import MyPatients from "./01-MyPatients";
+import Appointments from "./02-Appointments";
+import LabResults from "./03-LabResults";
+import Prescriptions from "./04-Prescriptions";
+import Messages from "./05-Messages";
+import Analytics from "./06-Analytics";
 
 /* ═══════════════════════════════════════════
    SUPPORTING COMPONENTS
@@ -37,7 +37,7 @@ const DashboardShell = ({ navItems, pages, accentColor, accentBg }) => {
           {navItems.map((item) => (
             <button
               key={item.label}
-              onClick={() => setActiveTab(item.label)} // setActiveTab IS NOW USED
+              onClick={() => setActiveTab(item.label)}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium ${
                 activeTab === item.label
                   ? `shadow-sm text-slate-900`

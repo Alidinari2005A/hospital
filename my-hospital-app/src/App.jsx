@@ -3,8 +3,29 @@ import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import HospitalLanding from "./pages/HospitalLanding";
 import Login from "./login";
-import { PatientDashboard, NurseDashboard, AdminDashboard } from "./pages/Dashboards";
 import DoctorDashboard from "./components/DoctorDashboard";
+
+// Placeholder dashboards until you build the real ones
+const PatientDashboard = () => (
+  <div style={{ padding: "2rem", textAlign: "center" }}>
+    <h2>🧑‍⚕️ Patient Dashboard</h2>
+    <p>Coming soon...</p>
+  </div>
+);
+
+const NurseDashboard = () => (
+  <div style={{ padding: "2rem", textAlign: "center" }}>
+    <h2>👩‍⚕️ Nurse Dashboard</h2>
+    <p>Coming soon...</p>
+  </div>
+);
+
+const AdminDashboard = () => (
+  <div style={{ padding: "2rem", textAlign: "center" }}>
+    <h2>🛠️ Admin Dashboard</h2>
+    <p>Coming soon...</p>
+  </div>
+);
 
 export default function App() {
   return (

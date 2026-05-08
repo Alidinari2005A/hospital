@@ -1,4 +1,11 @@
 import { useState } from "react";
+// ── Page imports (DoctorDashboard lives in src/components/, pages are one level up)
+import MyPatients    from "../pages/01-MyPatients";
+import Appointments  from "../pages/02-Appointments";
+import LabResults    from "../pages/03-LabResults";
+import Prescriptions from "../pages/04-Prescriptions";
+import Messages      from "../pages/05-Messages";
+import Analytics     from "../pages/06-Analytics";
 
 /* ─── FONTS & GLOBAL STYLES ─── */
 const GLOBAL_CSS = `
@@ -51,15 +58,15 @@ const GLOBAL_CSS = `
 
 /* ─── DATA ─── */
 const NAV = [
-  { id: "dashboard",    label: "Dashboard",        icon: "home" },
-  { id: "patients",     label: "My Patients",      icon: "users" },
-  { id: "appointments", label: "Appointments",     icon: "calendar" },
-  { id: "records",      label: "Medical Records",  icon: "file" },
-  { id: "lab",          label: "Lab Results",      icon: "flask" },
-  { id: "prescriptions",label: "Prescriptions",    icon: "pill" },
-  { id: "messages",     label: "Messages",         icon: "chat",  badge: 4 },
-  { id: "analytics",    label: "Analytics",        icon: "chart" },
-  { id: "settings",     label: "Settings",         icon: "cog" },
+  { id: "dashboard",     label: "Dashboard",       icon: "home" },
+  { id: "patients",      label: "My Patients",     icon: "users" },
+  { id: "appointments",  label: "Appointments",    icon: "calendar" },
+  { id: "records",       label: "Medical Records", icon: "file" },
+  { id: "lab",           label: "Lab Results",     icon: "flask" },
+  { id: "prescriptions", label: "Prescriptions",   icon: "pill" },
+  { id: "messages",      label: "Messages",        icon: "chat", badge: 4 },
+  { id: "analytics",     label: "Analytics",       icon: "chart" },
+  { id: "settings",      label: "Settings",        icon: "cog" },
 ];
 
 const STATS = [
@@ -85,10 +92,10 @@ const LAB_ALERTS = [
 ];
 
 const MESSAGES = [
-  { from: "Dr. Lena Park",     role: "Radiologist",       msg: "CT scan for Chen is ready for review.",       time: "9:04 AM", unread: true,  avatar: "LP", color: "#dbeafe" },
-  { from: "Nurse Aida Torres", role: "Ward 4B",            msg: "James Okafor is asking about discharge.",     time: "8:47 AM", unread: true,  avatar: "AT", color: "#d1fae5" },
-  { from: "Dr. Kwame Mensah",  role: "Internal Medicine",  msg: "Can you co-sign the referral for Vasquez?",   time: "8:12 AM", unread: false, avatar: "KM", color: "#f5f3ff" },
-  { from: "Reception",         role: "Admin",              msg: "New patient file uploaded — Yuki Tanaka.",    time: "7:58 AM", unread: false, avatar: "RX", color: "#fef3c7" },
+  { from: "Dr. Lena Park",     role: "Radiologist",      msg: "CT scan for Chen is ready for review.",      time: "9:04 AM", unread: true,  avatar: "LP", color: "#dbeafe" },
+  { from: "Nurse Aida Torres", role: "Ward 4B",           msg: "James Okafor is asking about discharge.",    time: "8:47 AM", unread: true,  avatar: "AT", color: "#d1fae5" },
+  { from: "Dr. Kwame Mensah",  role: "Internal Medicine", msg: "Can you co-sign the referral for Vasquez?", time: "8:12 AM", unread: false, avatar: "KM", color: "#f5f3ff" },
+  { from: "Reception",         role: "Admin",             msg: "New patient file uploaded — Yuki Tanaka.",   time: "7:58 AM", unread: false, avatar: "RX", color: "#fef3c7" },
 ];
 
 const TASKS = [
@@ -117,15 +124,15 @@ const WARD_BEDS = [
 ];
 
 const RECENT_ACTIVITY = [
-  { text: "Prescription issued for David Nkomo (Metformin 500mg)",      time: "10:22 AM", type: "rx" },
-  { text: "Lab order placed — Complete blood panel (Marcus Chen)",       time: "9:58 AM",  type: "lab" },
-  { text: "Appointment rescheduled — Elena Vasquez to 1:00 PM",         time: "9:31 AM",  type: "apt" },
-  { text: "Referral sent to Dr. Park — Cardiology (James Okafor)",      time: "8:55 AM",  type: "ref" },
-  { text: "Medical record updated — Fatima Al-Rashid",                  time: "8:40 AM",  type: "rec" },
+  { text: "Prescription issued for David Nkomo (Metformin 500mg)",   time: "10:22 AM", type: "rx" },
+  { text: "Lab order placed — Complete blood panel (Marcus Chen)",    time: "9:58 AM",  type: "lab" },
+  { text: "Appointment rescheduled — Elena Vasquez to 1:00 PM",      time: "9:31 AM",  type: "apt" },
+  { text: "Referral sent to Dr. Park — Cardiology (James Okafor)",   time: "8:55 AM",  type: "ref" },
+  { text: "Medical record updated — Fatima Al-Rashid",               time: "8:40 AM",  type: "rec" },
 ];
 
 const ONCALL = [
-  { name: "Dr. Sofia Reyes", spec: "Emergency",    status: "On duty", avatar: "SR" },
+  { name: "Dr. Sofia Reyes", spec: "Emergency",     status: "On duty", avatar: "SR" },
   { name: "Dr. Omar Faris",  spec: "Anesthesiology",status: "Standby", avatar: "OF" },
 ];
 
@@ -189,6 +196,15 @@ const ACTIVITY_ICONS = {
   rec: { icon: "file",     color: "#64748b", bg: "#f1f5f9" },
 };
 
+/* ─── PLACEHOLDER for unbuilt pages ─── */
+const PlaceholderPage = ({ title, emoji }) => (
+  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "60vh", gap: 16, color: "#94a3b8" }}>
+    <span style={{ fontSize: 64 }}>{emoji}</span>
+    <h2 style={{ fontSize: 24, fontWeight: 700, color: "#1e293b" }}>{title}</h2>
+    <p style={{ fontSize: 14 }}>This page is coming soon.</p>
+  </div>
+);
+
 /* ─── SECTION HEADER ─── */
 function SectionHeader({ title, sub, actionLabel, action }) {
   return (
@@ -217,7 +233,6 @@ function Sidebar({ active, setActive, open, setOpen }) {
         background: "linear-gradient(180deg, #0b1f3a 0%, #0d2748 100%)",
         display: "flex",
         flexDirection: "column",
-        /* FIX: height:100% fills the flex parent; overflow:hidden prevents bleed */
         height: "100%",
         overflow: "hidden",
         position: "relative",
@@ -243,7 +258,7 @@ function Sidebar({ active, setActive, open, setOpen }) {
         )}
       </div>
 
-      {/* Nav — flex:1 + minHeight:0 lets it shrink and scroll */}
+      {/* Nav */}
       <nav style={{ flex: 1, minHeight: 0, padding: "12px 8px", overflowY: "auto", display: "flex", flexDirection: "column", gap: 2 }}>
         {!open && (
           <button onClick={() => setOpen(true)} className="nav-btn" style={{ display: "flex", justifyContent: "center", padding: "10px", borderRadius: 10, marginBottom: 4, color: "rgba(255,255,255,0.4)" }}>
@@ -500,7 +515,154 @@ function ActivityFeed() {
   );
 }
 
-/* ─── MAIN DASHBOARD ─── */
+/* ─── OVERVIEW (main dashboard content) ─── */
+function Overview({ STATS, APPOINTMENTS, STATUS_CONFIG }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+      {/* Stat cards */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14 }}>
+        {STATS.map((s, i) => (
+          <div key={s.label} className={`card card-hover fade-in fade-${i + 1}`} style={{ padding: "16px 18px" }}>
+            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
+              <div>
+                <p style={{ fontSize: 12, color: "#64748b", fontWeight: 500 }}>{s.label}</p>
+                <p style={{ fontSize: 32, fontWeight: 800, color: "#0f172a", lineHeight: 1.1, marginTop: 4 }}>{s.value}</p>
+                <p style={{ fontSize: 12, color: "#94a3b8", marginTop: 3 }}>{s.sub}</p>
+              </div>
+              <div style={{ width: 40, height: 40, borderRadius: 11, background: s.bg, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <Icon name={s.icon} size={19} color={s.color} strokeWidth={2} />
+              </div>
+            </div>
+            <div style={{ marginTop: 12, paddingTop: 10, borderTop: "1px solid #f1f5f9", display: "flex", alignItems: "center", gap: 5 }}>
+              {s.up !== null && <Icon name={s.up ? "arrowUp" : "arrowDown"} size={12} color={s.up ? "#059669" : "#e11d48"} strokeWidth={2.5} />}
+              <span style={{ fontSize: 11.5, color: s.up === true ? "#059669" : s.up === false ? "#e11d48" : "#64748b", fontWeight: 600 }}>{s.trend}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Appointments + right panel */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 380px", gap: 14 }}>
+        <div className="card" style={{ overflow: "hidden" }}>
+          <SectionHeader title="Today's Appointments" sub="6 scheduled · 2 completed · 3 remaining" actionLabel="New Appointment" />
+          <div>
+            <div style={{ display: "grid", gridTemplateColumns: "70px 1fr 1fr 90px 110px 40px", gap: 8, padding: "8px 20px", background: "#f8fafc", borderBottom: "1px solid #f1f5f9" }}>
+              {["Time", "Patient", "Visit Type", "Room", "Status", ""].map((h, i) => (
+                <span key={i} style={{ fontSize: 10.5, fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.06em" }}>{h}</span>
+              ))}
+            </div>
+            {APPOINTMENTS.map((apt, idx) => (
+              <div
+                key={idx}
+                style={{ display: "grid", gridTemplateColumns: "70px 1fr 1fr 90px 110px 40px", gap: 8, padding: "13px 20px", borderBottom: idx < APPOINTMENTS.length - 1 ? "1px solid #f8fafc" : "none", alignItems: "center", cursor: "pointer", transition: "background 0.15s" }}
+                onMouseEnter={e => e.currentTarget.style.background = "#fafffe"}
+                onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+              >
+                <span style={{ fontSize: 13.5, fontWeight: 700, color: "#1e293b" }}>{apt.time}</span>
+                <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
+                  <div style={{ width: 32, height: 32, borderRadius: 99, background: apt.hue, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: apt.text, flexShrink: 0 }}>
+                    {apt.avatar}
+                  </div>
+                  <div>
+                    <p style={{ fontSize: 13, fontWeight: 600, color: "#1e293b" }}>{apt.name}</p>
+                    <p style={{ fontSize: 11, color: "#94a3b8" }}>{apt.age}y old</p>
+                  </div>
+                </div>
+                <span style={{ fontSize: 12.5, color: "#475569" }}>{apt.type}</span>
+                <span style={{ fontSize: 12, fontWeight: 600, color: "#64748b", background: "#f1f5f9", padding: "3px 10px", borderRadius: 7, display: "inline-block" }}>{apt.room}</span>
+                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  <div style={{ width: 7, height: 7, borderRadius: 99, background: STATUS_CONFIG[apt.status].dot, flexShrink: 0 }} />
+                  <span style={{ fontSize: 12, fontWeight: 600, color: STATUS_CONFIG[apt.status].text }}>{apt.status}</span>
+                </div>
+                <button style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 28, height: 28, borderRadius: 7, background: "#f1f5f9", color: "#64748b" }}>
+                  <Icon name="chevron" size={13} color="#64748b" />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Right column */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+          <div className="card" style={{ overflow: "hidden" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 18px", borderBottom: "1px solid #f1f5f9" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <p style={{ fontWeight: 700, fontSize: 14, color: "#0f172a" }}>Lab Alerts</p>
+                <span style={{ fontSize: 10, fontWeight: 700, background: "#fff1f2", color: "#9f1239", padding: "2px 8px", borderRadius: 99, border: "1px solid #fecdd3" }}>3 new</span>
+              </div>
+              <button style={{ fontSize: 12, color: "#0d9488", fontWeight: 600 }}>View All</button>
+            </div>
+            <div style={{ padding: "12px 14px", display: "flex", flexDirection: "column", gap: 8 }}>
+              {LAB_ALERTS.map((alert, i) => {
+                const uc = URGENCY_CONFIG[alert.urgency];
+                return (
+                  <div key={i} style={{ padding: "11px 12px", borderRadius: 11, background: uc.bg, border: `1px solid ${uc.border}` }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
+                      <div style={{ flex: 1, overflow: "hidden" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 3 }}>
+                          <div style={{ width: 6, height: 6, borderRadius: 99, background: uc.dot, flexShrink: 0 }} />
+                          <p style={{ fontSize: 13, fontWeight: 700, color: uc.text }}>{alert.patient}</p>
+                        </div>
+                        <p style={{ fontSize: 11.5, color: uc.text, opacity: 0.8 }}>{alert.test}</p>
+                        <p style={{ fontSize: 11, fontWeight: 500, color: uc.text, marginTop: 2 }}>{alert.finding}</p>
+                      </div>
+                      <div style={{ textAlign: "right", flexShrink: 0 }}>
+                        <span style={{ fontSize: 10, fontWeight: 700, color: uc.text, display: "block" }}>{alert.urgency}</span>
+                        <span style={{ fontSize: 10, opacity: 0.6, color: uc.text }}>{alert.time}</span>
+                      </div>
+                    </div>
+                    <button style={{ marginTop: 8, fontSize: 11.5, fontWeight: 700, color: uc.text, padding: "5px 12px", borderRadius: 7, border: `1px solid ${uc.border}`, background: "rgba(255,255,255,0.6)", width: "100%", textAlign: "center" }}>
+                      {alert.action}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="card" style={{ overflow: "hidden" }}>
+            <SectionHeader title="Quick Actions" />
+            <div style={{ padding: "12px 14px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+              {[
+                { label: "New Prescription", icon: "pill",    color: "#7c3aed", bg: "#f5f3ff" },
+                { label: "Add Patient",       icon: "users",   color: "#0d9488", bg: "#f0fdfa" },
+                { label: "Order Lab Test",    icon: "flask",   color: "#2563eb", bg: "#eff6ff" },
+                { label: "Refer Patient",     icon: "file",    color: "#d97706", bg: "#fffbeb" },
+                { label: "Book Surgery",      icon: "surgery", color: "#e11d48", bg: "#fff1f2" },
+                { label: "Send Message",      icon: "chat",    color: "#0891b2", bg: "#ecfeff" },
+              ].map((a) => (
+                <button
+                  key={a.label}
+                  style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, padding: "12px 8px", borderRadius: 10, background: a.bg, border: "1px solid transparent", transition: "all 0.15s", textAlign: "center" }}
+                  onMouseEnter={e => { e.currentTarget.style.filter = "brightness(0.96)"; e.currentTarget.style.transform = "scale(1.02)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.filter = "brightness(1)";    e.currentTarget.style.transform = "scale(1)"; }}
+                >
+                  <Icon name={a.icon} size={20} color={a.color} strokeWidth={2} />
+                  <span style={{ fontSize: 11.5, fontWeight: 600, color: a.color, lineHeight: 1.3 }}>{a.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+        <WeeklyChart />
+        <WardStatus />
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+        <MessagesPanel />
+        <TaskList />
+      </div>
+
+      <ActivityFeed />
+      <div style={{ height: 8 }} />
+    </div>
+  );
+}
+
+/* ─── MAIN EXPORT ─── */
 export default function DoctorDashboard() {
   const [activeNav, setActiveNav]     = useState("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -513,26 +675,31 @@ export default function DoctorDashboard() {
   const notifCount = 3;
   const msgCount   = MESSAGES.filter(m => m.unread).length;
 
+  // ── THIS is the router — maps nav IDs to page components ──
+  const renderPage = () => {
+    switch (activeNav) {
+      case "dashboard":     return <Overview STATS={STATS} APPOINTMENTS={APPOINTMENTS} STATUS_CONFIG={STATUS_CONFIG} />;
+      case "patients":      return <MyPatients />;
+      case "appointments":  return <Appointments />;
+      case "records":       return <PlaceholderPage title="Medical Records" emoji="📁" />;
+      case "lab":           return <LabResults />;
+      case "prescriptions": return <Prescriptions />;
+      case "messages":      return <Messages />;
+      case "analytics":     return <Analytics />;
+      case "settings":      return <PlaceholderPage title="Settings" emoji="⚙️" />;
+      default:              return <PlaceholderPage title="Page Not Found" emoji="❓" />;
+    }
+  };
+
   return (
-    /*
-     * ROOT CONTAINER
-     * height:100vh + overflow:hidden gives us a fixed viewport.
-     * No scrolling happens here — all scrolling is in <main>.
-     */
     <div style={{ display: "flex", height: "100vh", background: "#f0f4f8", fontFamily: "'Plus Jakarta Sans', sans-serif", overflow: "hidden" }}>
       <style>{GLOBAL_CSS}</style>
 
       <Sidebar active={activeNav} setActive={setActiveNav} open={sidebarOpen} setOpen={setSidebarOpen} />
 
-      {/*
-       * RIGHT COLUMN
-       * flex:1      — fills remaining width
-       * minWidth:0  — prevents flex blowout from wide children
-       * overflow:hidden — clips children; scrolling lives inside <main>
-       */}
       <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", overflow: "hidden" }}>
 
-        {/* TOP HEADER — fixed height, never shrinks */}
+        {/* Header */}
         <header style={{ height: 64, flexShrink: 0, background: "#fff", borderBottom: "1px solid #e8edf3", display: "flex", alignItems: "center", padding: "0 24px", gap: 16, zIndex: 5 }}>
           {!sidebarOpen && (
             <button onClick={() => setSidebarOpen(true)} style={{ color: "#64748b", marginRight: 4, padding: 6, borderRadius: 8 }}>
@@ -545,7 +712,6 @@ export default function DoctorDashboard() {
           </div>
 
           <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 10 }}>
-            {/* Search */}
             <div style={{ position: "relative" }}>
               <div style={{ position: "absolute", left: 11, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }}>
                 <Icon name="search" size={15} color="#94a3b8" />
@@ -560,7 +726,6 @@ export default function DoctorDashboard() {
               />
             </div>
 
-            {/* Notifications */}
             <button style={{ position: "relative", width: 38, height: 38, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", background: "#f8fafc", border: "1.5px solid #e8edf3" }}>
               <Icon name="bell" size={18} color="#475569" />
               {notifCount > 0 && (
@@ -568,7 +733,6 @@ export default function DoctorDashboard() {
               )}
             </button>
 
-            {/* Messages badge */}
             <button style={{ position: "relative", width: 38, height: 38, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", background: "#f8fafc", border: "1.5px solid #e8edf3" }}>
               <Icon name="chat" size={18} color="#475569" />
               {msgCount > 0 && (
@@ -578,7 +742,6 @@ export default function DoctorDashboard() {
 
             <div style={{ width: 1, height: 28, background: "#e8edf3" }} />
 
-            {/* Doctor chip */}
             <div style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", padding: "4px 10px", borderRadius: 10, border: "1.5px solid #e8edf3", background: "#f8fafc" }}>
               <div style={{ width: 30, height: 30, borderRadius: 99, background: "linear-gradient(135deg, #0d9488, #059669)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: "#fff", fontWeight: 700 }}>AK</div>
               <div>
@@ -590,165 +753,9 @@ export default function DoctorDashboard() {
           </div>
         </header>
 
-        {/*
-         * MAIN SCROLLABLE AREA
-         * flex:1     — takes all remaining height after the header
-         * minHeight:0 — THE KEY FIX: overrides the default min-height:auto so
-         *               the element can actually shrink below its content height,
-         *               allowing overflowY:auto to kick in properly.
-         * overflowY:auto — scrollbar appears only when content is taller than this box
-         */}
-        <main style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "20px 24px", display: "flex", flexDirection: "column", gap: 18 }}>
-
-          {/* ── STAT CARDS ── */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14 }}>
-            {STATS.map((s, i) => (
-              <div key={s.label} className={`card card-hover fade-in fade-${i + 1}`} style={{ padding: "16px 18px" }}>
-                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
-                  <div>
-                    <p style={{ fontSize: 12, color: "#64748b", fontWeight: 500 }}>{s.label}</p>
-                    <p style={{ fontSize: 32, fontWeight: 800, color: "#0f172a", lineHeight: 1.1, marginTop: 4 }}>{s.value}</p>
-                    <p style={{ fontSize: 12, color: "#94a3b8", marginTop: 3 }}>{s.sub}</p>
-                  </div>
-                  <div style={{ width: 40, height: 40, borderRadius: 11, background: s.bg, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                    <Icon name={s.icon} size={19} color={s.color} strokeWidth={2} />
-                  </div>
-                </div>
-                <div style={{ marginTop: 12, paddingTop: 10, borderTop: "1px solid #f1f5f9", display: "flex", alignItems: "center", gap: 5 }}>
-                  {s.up !== null && <Icon name={s.up ? "arrowUp" : "arrowDown"} size={12} color={s.up ? "#059669" : "#e11d48"} strokeWidth={2.5} />}
-                  <span style={{ fontSize: 11.5, color: s.up === true ? "#059669" : s.up === false ? "#e11d48" : "#64748b", fontWeight: 600 }}>{s.trend}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* ── ROW 2: APPOINTMENTS + RIGHT PANEL ── */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 380px", gap: 14 }}>
-
-            {/* Appointments table */}
-            <div className="card" style={{ overflow: "hidden" }}>
-              <SectionHeader title="Today's Appointments" sub="6 scheduled · 2 completed · 3 remaining" actionLabel="New Appointment" />
-              <div>
-                <div style={{ display: "grid", gridTemplateColumns: "70px 1fr 1fr 90px 110px 40px", gap: 8, padding: "8px 20px", background: "#f8fafc", borderBottom: "1px solid #f1f5f9" }}>
-                  {["Time", "Patient", "Visit Type", "Room", "Status", ""].map((h, i) => (
-                    <span key={i} style={{ fontSize: 10.5, fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.06em" }}>{h}</span>
-                  ))}
-                </div>
-                {APPOINTMENTS.map((apt, idx) => (
-                  <div
-                    key={idx}
-                    style={{ display: "grid", gridTemplateColumns: "70px 1fr 1fr 90px 110px 40px", gap: 8, padding: "13px 20px", borderBottom: idx < APPOINTMENTS.length - 1 ? "1px solid #f8fafc" : "none", alignItems: "center", cursor: "pointer", transition: "background 0.15s" }}
-                    onMouseEnter={e => e.currentTarget.style.background = "#fafffe"}
-                    onMouseLeave={e => e.currentTarget.style.background = "transparent"}
-                  >
-                    <span style={{ fontSize: 13.5, fontWeight: 700, color: "#1e293b" }}>{apt.time}</span>
-                    <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
-                      <div style={{ width: 32, height: 32, borderRadius: 99, background: apt.hue, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: apt.text, flexShrink: 0 }}>
-                        {apt.avatar}
-                      </div>
-                      <div>
-                        <p style={{ fontSize: 13, fontWeight: 600, color: "#1e293b" }}>{apt.name}</p>
-                        <p style={{ fontSize: 11, color: "#94a3b8" }}>{apt.age}y old</p>
-                      </div>
-                    </div>
-                    <span style={{ fontSize: 12.5, color: "#475569" }}>{apt.type}</span>
-                    <span style={{ fontSize: 12, fontWeight: 600, color: "#64748b", background: "#f1f5f9", padding: "3px 10px", borderRadius: 7, display: "inline-block" }}>{apt.room}</span>
-                    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                      <div style={{ width: 7, height: 7, borderRadius: 99, background: STATUS_CONFIG[apt.status].dot, flexShrink: 0 }} />
-                      <span style={{ fontSize: 12, fontWeight: 600, color: STATUS_CONFIG[apt.status].text }}>{apt.status}</span>
-                    </div>
-                    <button style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 28, height: 28, borderRadius: 7, background: "#f1f5f9", color: "#64748b" }}>
-                      <Icon name="chevron" size={13} color="#64748b" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Right column */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-
-              {/* Lab Alerts */}
-              <div className="card" style={{ overflow: "hidden" }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 18px", borderBottom: "1px solid #f1f5f9" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <p style={{ fontWeight: 700, fontSize: 14, color: "#0f172a" }}>Lab Alerts</p>
-                    <span style={{ fontSize: 10, fontWeight: 700, background: "#fff1f2", color: "#9f1239", padding: "2px 8px", borderRadius: 99, border: "1px solid #fecdd3" }}>3 new</span>
-                  </div>
-                  <button style={{ fontSize: 12, color: "#0d9488", fontWeight: 600 }}>View All</button>
-                </div>
-                <div style={{ padding: "12px 14px", display: "flex", flexDirection: "column", gap: 8 }}>
-                  {LAB_ALERTS.map((alert, i) => {
-                    const uc = URGENCY_CONFIG[alert.urgency];
-                    return (
-                      <div key={i} style={{ padding: "11px 12px", borderRadius: 11, background: uc.bg, border: `1px solid ${uc.border}` }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
-                          <div style={{ flex: 1, overflow: "hidden" }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 3 }}>
-                              <div style={{ width: 6, height: 6, borderRadius: 99, background: uc.dot, flexShrink: 0 }} />
-                              <p style={{ fontSize: 13, fontWeight: 700, color: uc.text }}>{alert.patient}</p>
-                            </div>
-                            <p style={{ fontSize: 11.5, color: uc.text, opacity: 0.8 }}>{alert.test}</p>
-                            <p style={{ fontSize: 11, fontWeight: 500, color: uc.text, marginTop: 2 }}>{alert.finding}</p>
-                          </div>
-                          <div style={{ textAlign: "right", flexShrink: 0 }}>
-                            <span style={{ fontSize: 10, fontWeight: 700, color: uc.text, display: "block" }}>{alert.urgency}</span>
-                            <span style={{ fontSize: 10, opacity: 0.6, color: uc.text }}>{alert.time}</span>
-                          </div>
-                        </div>
-                        <button style={{ marginTop: 8, fontSize: 11.5, fontWeight: 700, color: uc.text, padding: "5px 12px", borderRadius: 7, border: `1px solid ${uc.border}`, background: "rgba(255,255,255,0.6)", width: "100%", textAlign: "center" }}>
-                          {alert.action}
-                        </button>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Quick Actions */}
-              <div className="card" style={{ overflow: "hidden" }}>
-                <SectionHeader title="Quick Actions" />
-                <div style={{ padding: "12px 14px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-                  {[
-                    { label: "New Prescription", icon: "pill",    color: "#7c3aed", bg: "#f5f3ff" },
-                    { label: "Add Patient",       icon: "users",   color: "#0d9488", bg: "#f0fdfa" },
-                    { label: "Order Lab Test",    icon: "flask",   color: "#2563eb", bg: "#eff6ff" },
-                    { label: "Refer Patient",     icon: "file",    color: "#d97706", bg: "#fffbeb" },
-                    { label: "Book Surgery",      icon: "surgery", color: "#e11d48", bg: "#fff1f2" },
-                    { label: "Send Message",      icon: "chat",    color: "#0891b2", bg: "#ecfeff" },
-                  ].map((a) => (
-                    <button
-                      key={a.label}
-                      style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, padding: "12px 8px", borderRadius: 10, background: a.bg, border: "1px solid transparent", transition: "all 0.15s", textAlign: "center" }}
-                      onMouseEnter={e => { e.currentTarget.style.filter = "brightness(0.96)"; e.currentTarget.style.transform = "scale(1.02)"; }}
-                      onMouseLeave={e => { e.currentTarget.style.filter = "brightness(1)";   e.currentTarget.style.transform = "scale(1)"; }}
-                    >
-                      <Icon name={a.icon} size={20} color={a.color} strokeWidth={2} />
-                      <span style={{ fontSize: 11.5, fontWeight: 600, color: a.color, lineHeight: 1.3 }}>{a.label}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* ── ROW 3: CHART + WARD ── */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
-            <WeeklyChart />
-            <WardStatus />
-          </div>
-
-          {/* ── ROW 4: MESSAGES + TASKS ── */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
-            <MessagesPanel />
-            <TaskList />
-          </div>
-
-          {/* ── ROW 5: ACTIVITY FEED ── */}
-          <ActivityFeed />
-
-          {/* Bottom breathing room */}
-          <div style={{ height: 8 }} />
+        {/* Scrollable content — now driven by renderPage() */}
+        <main style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "20px 24px" }}>
+          {renderPage()}
         </main>
       </div>
     </div>
