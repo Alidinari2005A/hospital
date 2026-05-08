@@ -1,10 +1,4 @@
-/**
- * Placeholder dashboards for Patient, Nurse, and Admin.
- * Each one is a ready-to-expand shell with the same design language
- * as DoctorDashboard. Replace the content sections as you build them out.
- */
-
-import { useAuth } from "../context/AuthContext";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const CSS = `
@@ -21,13 +15,30 @@ const CSS = `
   .fade { animation: fadeUp 0.4s ease both; }
 `;
 
+/* ─── Placeholder Page ─── */
+function PlaceholderPage({ title, emoji, accentColor }) {
+  return (
+    <div className="fade" style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "60vh", gap: 16, color: "#94a3b8" }}>
+      <div style={{ fontSize: 56 }}>{emoji}</div>
+      <h2 style={{ fontSize: 22, fontWeight: 700, color: "#0f172a" }}>{title}</h2>
+      <p style={{ fontSize: 14, color: "#94a3b8" }}>This section is under construction.</p>
+      <div style={{ marginTop: 8, padding: "10px 24px", borderRadius: 10, background: accentColor + "15", color: accentColor, fontWeight: 600, fontSize: 13, border: `1px solid ${accentColor}33` }}>
+        Coming soon
+      </div>
+    </div>
+  );
+}
+
 /* ─── Shared Shell ─── */
-function DashboardShell({ role, accentColor, accentBg, navItems, cards, children }) {
-  const { user, logout } = useAuth();
+function DashboardShell({ role, accentColor, accentBg, navItems, cards, pages }) {
   const navigate = useNavigate();
+  const [activePage, setActivePage] = useState(navItems[0].label);
+
+  const userName = localStorage.getItem("role") || role;
 
   const handleLogout = () => {
-    logout();
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
     navigate("/login", { replace: true });
   };
 
@@ -53,23 +64,34 @@ function DashboardShell({ role, accentColor, accentBg, navItems, cards, children
 
         {/* Nav */}
         <nav style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "12px 8px", display: "flex", flexDirection: "column", gap: 2 }}>
-          {navItems.map((item, i) => (
-            <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 10, background: item.active ? `${accentColor}22` : "transparent", color: item.active ? accentColor : "rgba(255,255,255,0.42)", fontWeight: item.active ? 600 : 500, fontSize: 13.5, cursor: "pointer" }}>
-              <span style={{ fontSize: 16 }}>{item.emoji}</span>
-              {item.label}
-              {item.badge && <span style={{ marginLeft: "auto", fontSize: 10, fontWeight: 700, background: "#e11d48", color: "#fff", borderRadius: 99, padding: "1px 6px" }}>{item.badge}</span>}
-            </div>
-          ))}
+          {navItems.map((item, i) => {
+            const isActive = activePage === item.label;
+            return (
+              <div
+                key={i}
+                onClick={() => setActivePage(item.label)}
+                style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 10, background: isActive ? `${accentColor}22` : "transparent", color: isActive ? accentColor : "rgba(255,255,255,0.42)", fontWeight: isActive ? 600 : 500, fontSize: 13.5, cursor: "pointer", transition: "all 0.2s" }}
+              >
+                <span style={{ fontSize: 16 }}>{item.emoji}</span>
+                {item.label}
+                {item.badge && (
+                  <span style={{ marginLeft: "auto", fontSize: 10, fontWeight: 700, background: "#e11d48", color: "#fff", borderRadius: 99, padding: "1px 6px" }}>
+                    {item.badge}
+                  </span>
+                )}
+              </div>
+            );
+          })}
         </nav>
 
         {/* User profile + logout */}
         <div style={{ padding: "10px 8px", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 10 }}>
             <div style={{ width: 34, height: 34, borderRadius: 99, background: `linear-gradient(135deg, ${accentColor}, ${accentColor}bb)`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: "#fff", fontWeight: 700, flexShrink: 0 }}>
-              {user?.avatar}
+              {role[0].toUpperCase()}
             </div>
             <div style={{ flex: 1, overflow: "hidden" }}>
-              <p style={{ fontSize: 12.5, color: "#fff", fontWeight: 600, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{user?.name}</p>
+              <p style={{ fontSize: 12.5, color: "#fff", fontWeight: 600, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{userName}</p>
               <p style={{ fontSize: 11, color: "rgba(255,255,255,0.38)", textTransform: "capitalize" }}>{role}</p>
             </div>
             <button onClick={handleLogout} title="Log out" style={{ color: "rgba(255,255,255,0.3)", flexShrink: 0 }}>
@@ -86,11 +108,13 @@ function DashboardShell({ role, accentColor, accentBg, navItems, cards, children
         {/* Header */}
         <header style={{ height: 64, background: "#fff", borderBottom: "1px solid #e8edf3", display: "flex", alignItems: "center", padding: "0 24px", flexShrink: 0 }}>
           <div>
-            <p style={{ fontFamily: "'Lora', serif", fontWeight: 700, fontSize: 16, color: "#0f172a" }}>{greeting}, {user?.name}</p>
+            <p style={{ fontFamily: "'Lora', serif", fontWeight: 700, fontSize: 16, color: "#0f172a" }}>{greeting}, {userName}</p>
             <p style={{ fontSize: 12, color: "#94a3b8", marginTop: 1 }}>{today}</p>
           </div>
           <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, padding: "4px 14px", borderRadius: 99, background: accentBg, color: accentColor, textTransform: "capitalize", border: `1px solid ${accentColor}33` }}>{role} Portal</span>
+            <span style={{ fontSize: 12, fontWeight: 700, padding: "4px 14px", borderRadius: 99, background: accentBg, color: accentColor, textTransform: "capitalize", border: `1px solid ${accentColor}33` }}>
+              {activePage}
+            </span>
             <button onClick={handleLogout} style={{ fontSize: 13, fontWeight: 600, color: "#e11d48", padding: "6px 14px", borderRadius: 8, border: "1.5px solid #fecdd3", background: "#fff1f2" }}>
               Log out
             </button>
@@ -98,44 +122,48 @@ function DashboardShell({ role, accentColor, accentBg, navItems, cards, children
         </header>
 
         {/* Body */}
-       <main style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "24px" }}>
-          {/* Stat Cards */}
-          <div style={{ display: "grid", gridTemplateColumns: `repeat(${cards.length}, 1fr)`, gap: 14, marginBottom: 20 }}>
-            {cards.map((c, i) => (
-              <div key={i} className="fade" style={{ background: "#fff", borderRadius: 14, border: "1px solid #e8edf3", padding: "18px 20px", animationDelay: `${i * 0.07}s` }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                  <div>
-                    <p style={{ fontSize: 12, color: "#64748b", fontWeight: 500 }}>{c.label}</p>
-                    <p style={{ fontSize: 30, fontWeight: 800, color: "#0f172a", lineHeight: 1.1, marginTop: 4 }}>{c.value}</p>
-                    <p style={{ fontSize: 12, color: "#94a3b8", marginTop: 3 }}>{c.sub}</p>
-                  </div>
-                  <div style={{ width: 40, height: 40, borderRadius: 11, background: c.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20 }}>
-                    {c.emoji}
+        <main style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "24px" }}>
+          {/* Stat Cards — only on Overview */}
+          {activePage === navItems[0].label && (
+            <div style={{ display: "grid", gridTemplateColumns: `repeat(${cards.length}, 1fr)`, gap: 14, marginBottom: 20 }}>
+              {cards.map((c, i) => (
+                <div key={i} className="fade" style={{ background: "#fff", borderRadius: 14, border: "1px solid #e8edf3", padding: "18px 20px", animationDelay: `${i * 0.07}s` }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                    <div>
+                      <p style={{ fontSize: 12, color: "#64748b", fontWeight: 500 }}>{c.label}</p>
+                      <p style={{ fontSize: 30, fontWeight: 800, color: "#0f172a", lineHeight: 1.1, marginTop: 4 }}>{c.value}</p>
+                      <p style={{ fontSize: 12, color: "#94a3b8", marginTop: 3 }}>{c.sub}</p>
+                    </div>
+                    <div style={{ width: 40, height: 40, borderRadius: 11, background: c.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20 }}>
+                      {c.emoji}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
 
-          {/* Placeholder content */}
-          {children}
+          {/* Page Content */}
+          <div key={activePage}>
+            {pages[activePage] || <PlaceholderPage title={activePage} emoji={navItems.find(n => n.label === activePage)?.emoji || "📄"} accentColor={accentColor} />}
+          </div>
         </main>
       </div>
     </div>
   );
 }
 
-/* ─────────────────────────────────────────
+/* ═══════════════════════════════════════════
    PATIENT DASHBOARD
-───────────────────────────────────────── */
+═══════════════════════════════════════════ */
 export function PatientDashboard() {
-  const patientNav = [
-    { emoji: "🏠", label: "Overview",        active: true },
+  const navItems = [
+    { emoji: "🏠", label: "Overview" },
     { emoji: "📅", label: "My Appointments" },
     { emoji: "💊", label: "Prescriptions" },
     { emoji: "🧪", label: "Lab Results" },
     { emoji: "📋", label: "Medical History" },
-    { emoji: "💬", label: "Messages",        badge: 1 },
+    { emoji: "💬", label: "Messages", badge: 1 },
     { emoji: "💳", label: "Billing" },
     { emoji: "⚙️", label: "Settings" },
   ];
@@ -147,8 +175,8 @@ export function PatientDashboard() {
     { label: "Unread Messages",       value: "1",  sub: "From Dr. Khalil",        emoji: "💬", bg: "#f0fdfa" },
   ];
 
-  return (
-    <DashboardShell role="patient" accentColor="#0d9488" accentBg="#f0fdfa" navItems={patientNav} cards={cards}>
+  const pages = {
+    "Overview": (
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
         {/* Upcoming Appointments */}
         <div style={{ background: "#fff", borderRadius: 14, border: "1px solid #e8edf3", overflow: "hidden" }}>
@@ -156,18 +184,18 @@ export function PatientDashboard() {
             <p style={{ fontWeight: 700, fontSize: 14, color: "#0f172a" }}>Upcoming Appointments</p>
           </div>
           {[
-            { date: "Tomorrow",    time: "10:00 AM", doctor: "Dr. Amir Khalil", type: "Follow-up",     color: "#dbeafe", text: "#1e40af" },
-            { date: "May 15",      time: "2:30 PM",  doctor: "Dr. Lena Park",   type: "Lab Review",    color: "#d1fae5", text: "#065f46" },
+            { date: "Tomorrow", time: "10:00 AM", doctor: "Dr. Amir Khalil", type: "Follow-up",  color: "#dbeafe", text: "#1e40af" },
+            { date: "May 15",   time: "2:30 PM",  doctor: "Dr. Lena Park",   type: "Lab Review", color: "#d1fae5", text: "#065f46" },
           ].map((apt, i) => (
             <div key={i} style={{ display: "flex", alignItems: "center", gap: 14, padding: "14px 20px", borderBottom: i === 0 ? "1px solid #f8fafc" : "none" }}>
-              <div style={{ width: 44, height: 44, borderRadius: 10, background: apt.color, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-                <span style={{ fontSize: 10, fontWeight: 700, color: apt.text }}>{apt.date.slice(0, 3).toUpperCase()}</span>
+              <div style={{ width: 44, height: 44, borderRadius: 10, background: apt.color, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <span style={{ fontSize: 10, fontWeight: 700, color: apt.text }}>{apt.date.slice(0,3).toUpperCase()}</span>
               </div>
               <div style={{ flex: 1 }}>
                 <p style={{ fontSize: 13.5, fontWeight: 600, color: "#1e293b" }}>{apt.type}</p>
                 <p style={{ fontSize: 12, color: "#64748b" }}>{apt.doctor} · {apt.time}</p>
               </div>
-              <button style={{ fontSize: 12, fontWeight: 600, color: "#0d9488", padding: "5px 12px", borderRadius: 7, border: "1.5px solid #0d9488", background: "transparent" }}>Details</button>
+              <button style={{ fontSize: 12, fontWeight: 600, color: "#0d9488", padding: "5px 12px", borderRadius: 7, border: "1.5px solid #0d9488" }}>Details</button>
             </div>
           ))}
         </div>
@@ -178,9 +206,9 @@ export function PatientDashboard() {
             <p style={{ fontWeight: 700, fontSize: 14, color: "#0f172a" }}>Active Prescriptions</p>
           </div>
           {[
-            { name: "Metformin 500mg",   freq: "Twice daily",  refill: "12 days left",  urgent: false },
-            { name: "Lisinopril 10mg",   freq: "Once daily",   refill: "Refill needed", urgent: true },
-            { name: "Atorvastatin 20mg", freq: "Once at night", refill: "20 days left", urgent: false },
+            { name: "Metformin 500mg",   freq: "Twice daily",   refill: "12 days left",  urgent: false },
+            { name: "Lisinopril 10mg",   freq: "Once daily",    refill: "Refill needed", urgent: true  },
+            { name: "Atorvastatin 20mg", freq: "Once at night", refill: "20 days left",  urgent: false },
           ].map((rx, i) => (
             <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 20px", borderBottom: i < 2 ? "1px solid #f8fafc" : "none" }}>
               <div style={{ width: 36, height: 36, borderRadius: 9, background: "#f5f3ff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 }}>💊</div>
@@ -193,34 +221,43 @@ export function PatientDashboard() {
           ))}
         </div>
       </div>
-    </DashboardShell>
-  );
+    ),
+    "My Appointments": <PlaceholderPage title="My Appointments" emoji="📅" accentColor="#0d9488" />,
+    "Prescriptions":   <PlaceholderPage title="Prescriptions"   emoji="💊" accentColor="#0d9488" />,
+    "Lab Results":     <PlaceholderPage title="Lab Results"     emoji="🧪" accentColor="#0d9488" />,
+    "Medical History": <PlaceholderPage title="Medical History" emoji="📋" accentColor="#0d9488" />,
+    "Messages":        <PlaceholderPage title="Messages"        emoji="💬" accentColor="#0d9488" />,
+    "Billing":         <PlaceholderPage title="Billing"         emoji="💳" accentColor="#0d9488" />,
+    "Settings":        <PlaceholderPage title="Settings"        emoji="⚙️" accentColor="#0d9488" />,
+  };
+
+  return <DashboardShell role="patient" accentColor="#0d9488" accentBg="#f0fdfa" navItems={navItems} cards={cards} pages={pages} />;
 }
 
-/* ─────────────────────────────────────────
+/* ═══════════════════════════════════════════
    NURSE DASHBOARD
-───────────────────────────────────────── */
+═══════════════════════════════════════════ */
 export function NurseDashboard() {
-  const nurseNav = [
-    { emoji: "🏠", label: "Overview",       active: true },
+  const navItems = [
+    { emoji: "🏠", label: "Overview" },
     { emoji: "🛏️", label: "Ward Patients" },
     { emoji: "📅", label: "My Schedule" },
     { emoji: "💉", label: "Medications" },
     { emoji: "📋", label: "Care Plans" },
-    { emoji: "⚠️", label: "Alerts",         badge: 3 },
-    { emoji: "💬", label: "Messages",       badge: 2 },
+    { emoji: "⚠️", label: "Alerts", badge: 3 },
+    { emoji: "💬", label: "Messages", badge: 2 },
     { emoji: "⚙️", label: "Settings" },
   ];
 
   const cards = [
-    { label: "Patients in Ward",    value: "14", sub: "Ward 4B · 2 critical",  emoji: "🛏️", bg: "#eff6ff" },
-    { label: "Medications Due",     value: "6",  sub: "Next in 15 minutes",    emoji: "💉", bg: "#fdf4ff" },
-    { label: "Pending Vitals",      value: "4",  sub: "3 overdue",             emoji: "🩺", bg: "#fff7ed" },
-    { label: "Active Alerts",       value: "3",  sub: "1 critical",            emoji: "⚠️", bg: "#fff1f2" },
+    { label: "Patients in Ward",  value: "14", sub: "Ward 4B · 2 critical", emoji: "🛏️", bg: "#eff6ff" },
+    { label: "Medications Due",   value: "6",  sub: "Next in 15 minutes",   emoji: "💉", bg: "#fdf4ff" },
+    { label: "Pending Vitals",    value: "4",  sub: "3 overdue",            emoji: "🩺", bg: "#fff7ed" },
+    { label: "Active Alerts",     value: "3",  sub: "1 critical",           emoji: "⚠️", bg: "#fff1f2" },
   ];
 
-  return (
-    <DashboardShell role="nurse" accentColor="#7c3aed" accentBg="#f5f3ff" navItems={nurseNav} cards={cards}>
+  const pages = {
+    "Overview": (
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
         {/* Medication Schedule */}
         <div style={{ background: "#fff", borderRadius: 14, border: "1px solid #e8edf3", overflow: "hidden" }}>
@@ -229,20 +266,20 @@ export function NurseDashboard() {
             <span style={{ fontSize: 11, fontWeight: 700, background: "#fdf4ff", color: "#7c3aed", padding: "2px 10px", borderRadius: 99 }}>6 due today</span>
           </div>
           {[
-            { time: "10:00 AM", patient: "James Okafor",  med: "Aspirin 100mg",      status: "Due",   statusColor: "#f59e0b", statusBg: "#fffbeb" },
-            { time: "10:30 AM", patient: "Marcus Chen",   med: "Warfarin 5mg",       status: "Due",   statusColor: "#f59e0b", statusBg: "#fffbeb" },
-            { time: "11:00 AM", patient: "Fatima Al-Rashid", med: "Folic Acid 400mcg", status: "Upcoming", statusColor: "#64748b", statusBg: "#f1f5f9" },
-            { time: "08:00 AM", patient: "Sarah Mitchell", med: "Amoxicillin 500mg", status: "Given",  statusColor: "#059669", statusBg: "#f0fdf4" },
+            { time: "10:00 AM", patient: "James Okafor",     med: "Aspirin 100mg",      status: "Due",      statusColor: "#f59e0b", statusBg: "#fffbeb" },
+            { time: "10:30 AM", patient: "Marcus Chen",      med: "Warfarin 5mg",       status: "Due",      statusColor: "#f59e0b", statusBg: "#fffbeb" },
+            { time: "11:00 AM", patient: "Fatima Al-Rashid", med: "Folic Acid 400mcg",  status: "Upcoming", statusColor: "#64748b", statusBg: "#f1f5f9" },
+            { time: "08:00 AM", patient: "Sarah Mitchell",   med: "Amoxicillin 500mg",  status: "Given",    statusColor: "#059669", statusBg: "#f0fdf4" },
           ].map((med, i) => (
             <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 20px", borderBottom: i < 3 ? "1px solid #f8fafc" : "none" }}>
               <div style={{ textAlign: "center", width: 52, flexShrink: 0 }}>
                 <p style={{ fontSize: 12.5, fontWeight: 700, color: "#1e293b" }}>{med.time}</p>
               </div>
-              <div style={{ flex: 1, overflow: "hidden" }}>
+              <div style={{ flex: 1 }}>
                 <p style={{ fontSize: 13, fontWeight: 600, color: "#1e293b" }}>{med.patient}</p>
                 <p style={{ fontSize: 11.5, color: "#64748b" }}>{med.med}</p>
               </div>
-              <span style={{ fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 99, background: med.statusBg, color: med.statusColor, flexShrink: 0 }}>{med.status}</span>
+              <span style={{ fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 99, background: med.statusBg, color: med.statusColor }}>{med.status}</span>
             </div>
           ))}
         </div>
@@ -254,10 +291,10 @@ export function NurseDashboard() {
             <span style={{ fontSize: 11, fontWeight: 700, background: "#fff1f2", color: "#e11d48", padding: "2px 10px", borderRadius: 99 }}>3 overdue</span>
           </div>
           {[
-            { patient: "Marcus Chen",    room: "A-115", due: "Overdue 30m", overdue: true },
-            { patient: "David Nkomo",    room: "C-310", due: "Overdue 10m", overdue: true },
-            { patient: "Elena Vasquez",  room: "B-204", due: "Overdue 5m",  overdue: true },
-            { patient: "James Okafor",   room: "B-207", due: "Due in 20m",  overdue: false },
+            { patient: "Marcus Chen",   room: "A-115", due: "Overdue 30m", overdue: true  },
+            { patient: "David Nkomo",   room: "C-310", due: "Overdue 10m", overdue: true  },
+            { patient: "Elena Vasquez", room: "B-204", due: "Overdue 5m",  overdue: true  },
+            { patient: "James Okafor",  room: "B-207", due: "Due in 20m",  overdue: false },
           ].map((v, i) => (
             <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 20px", borderBottom: i < 3 ? "1px solid #f8fafc" : "none" }}>
               <div style={{ width: 36, height: 36, borderRadius: 9, background: v.overdue ? "#fff1f2" : "#f0fdfa", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 }}>🩺</div>
@@ -270,17 +307,26 @@ export function NurseDashboard() {
           ))}
         </div>
       </div>
-    </DashboardShell>
-  );
+    ),
+    "Ward Patients": <PlaceholderPage title="Ward Patients" emoji="🛏️" accentColor="#7c3aed" />,
+    "My Schedule":   <PlaceholderPage title="My Schedule"   emoji="📅" accentColor="#7c3aed" />,
+    "Medications":   <PlaceholderPage title="Medications"   emoji="💉" accentColor="#7c3aed" />,
+    "Care Plans":    <PlaceholderPage title="Care Plans"    emoji="📋" accentColor="#7c3aed" />,
+    "Alerts":        <PlaceholderPage title="Alerts"        emoji="⚠️" accentColor="#7c3aed" />,
+    "Messages":      <PlaceholderPage title="Messages"      emoji="💬" accentColor="#7c3aed" />,
+    "Settings":      <PlaceholderPage title="Settings"      emoji="⚙️" accentColor="#7c3aed" />,
+  };
+
+  return <DashboardShell role="nurse" accentColor="#7c3aed" accentBg="#f5f3ff" navItems={navItems} cards={cards} pages={pages} />;
 }
 
-/* ─────────────────────────────────────────
+/* ═══════════════════════════════════════════
    ADMIN DASHBOARD
-───────────────────────────────────────── */
+═══════════════════════════════════════════ */
 export function AdminDashboard() {
-  const adminNav = [
-    { emoji: "🏠", label: "Overview",       active: true },
-    { emoji: "👥", label: "Staff",           },
+  const navItems = [
+    { emoji: "🏠", label: "Overview" },
+    { emoji: "👥", label: "Staff" },
     { emoji: "🏥", label: "Departments" },
     { emoji: "📅", label: "Scheduling" },
     { emoji: "💳", label: "Billing & Finance" },
@@ -291,13 +337,13 @@ export function AdminDashboard() {
 
   const cards = [
     { label: "Total Patients Today", value: "48", sub: "↑ 6 vs yesterday",       emoji: "🏥", bg: "#eff6ff" },
-    { label: "Staff on Duty",        value: "32", sub: "8 departments active",   emoji: "👥", bg: "#f0fdfa" },
-    { label: "Beds Occupied",        value: "64", sub: "Out of 80 total",        emoji: "🛏️", bg: "#fdf4ff" },
-    { label: "Pending Invoices",     value: "11", sub: "MAD 24,500 outstanding", emoji: "💳", bg: "#fffbeb" },
+    { label: "Staff on Duty",        value: "32", sub: "8 departments active",    emoji: "👥", bg: "#f0fdfa" },
+    { label: "Beds Occupied",        value: "64", sub: "Out of 80 total",         emoji: "🛏️", bg: "#fdf4ff" },
+    { label: "Pending Invoices",     value: "11", sub: "MAD 24,500 outstanding",  emoji: "💳", bg: "#fffbeb" },
   ];
 
-  return (
-    <DashboardShell role="admin" accentColor="#d97706" accentBg="#fffbeb" navItems={adminNav} cards={cards}>
+  const pages = {
+    "Overview": (
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
         {/* Department Overview */}
         <div style={{ background: "#fff", borderRadius: 14, border: "1px solid #e8edf3", overflow: "hidden" }}>
@@ -305,11 +351,11 @@ export function AdminDashboard() {
             <p style={{ fontWeight: 700, fontSize: 14, color: "#0f172a" }}>Department Overview</p>
           </div>
           {[
-            { dept: "Cardiology",    staff: 12, patients: 18, color: "#dbeafe", text: "#1e40af" },
-            { dept: "General Ward",  staff: 8,  patients: 24, color: "#d1fae5", text: "#065f46" },
-            { dept: "ICU",           staff: 6,  patients: 8,  color: "#fff1f2", text: "#9f1239" },
-            { dept: "Maternity",     staff: 5,  patients: 12, color: "#fdf4ff", text: "#7e22ce" },
-            { dept: "Emergency",     staff: 7,  patients: 6,  color: "#fffbeb", text: "#92400e" },
+            { dept: "Cardiology",   staff: 12, patients: 18, text: "#1e40af" },
+            { dept: "General Ward", staff: 8,  patients: 24, text: "#065f46" },
+            { dept: "ICU",          staff: 6,  patients: 8,  text: "#9f1239" },
+            { dept: "Maternity",    staff: 5,  patients: 12, text: "#7e22ce" },
+            { dept: "Emergency",    staff: 7,  patients: 6,  text: "#92400e" },
           ].map((d, i) => (
             <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "11px 20px", borderBottom: i < 4 ? "1px solid #f8fafc" : "none" }}>
               <div style={{ width: 10, height: 10, borderRadius: 99, background: d.text, flexShrink: 0 }} />
@@ -328,22 +374,20 @@ export function AdminDashboard() {
           ))}
         </div>
 
-        {/* Recent System Activity */}
+        {/* Recent Activity */}
         <div style={{ background: "#fff", borderRadius: 14, border: "1px solid #e8edf3", overflow: "hidden" }}>
           <div style={{ padding: "14px 20px", borderBottom: "1px solid #f1f5f9" }}>
             <p style={{ fontWeight: 700, fontSize: 14, color: "#0f172a" }}>Recent System Activity</p>
           </div>
           {[
-            { icon: "👤", text: "New patient registered — Yuki Tanaka",        time: "9:15 AM",  color: "#eff6ff" },
-            { icon: "💳", text: "Invoice #4821 paid — MAD 3,200",             time: "8:52 AM",  color: "#f0fdf4" },
-            { icon: "🏥", text: "ICU bed 6 assigned to James Okafor",          time: "8:30 AM",  color: "#fff1f2" },
-            { icon: "👥", text: "Dr. Sofia Reyes checked in for on-call duty", time: "8:00 AM",  color: "#fdf4ff" },
-            { icon: "📦", text: "Pharmacy stock alert — Amoxicillin low",      time: "7:45 AM",  color: "#fffbeb" },
+            { icon: "👤", text: "New patient registered — Yuki Tanaka",        time: "9:15 AM", color: "#eff6ff" },
+            { icon: "💳", text: "Invoice #4821 paid — MAD 3,200",             time: "8:52 AM", color: "#f0fdf4" },
+            { icon: "🏥", text: "ICU bed 6 assigned to James Okafor",          time: "8:30 AM", color: "#fff1f2" },
+            { icon: "👥", text: "Dr. Sofia Reyes checked in for on-call duty", time: "8:00 AM", color: "#fdf4ff" },
+            { icon: "📦", text: "Pharmacy stock alert — Amoxicillin low",      time: "7:45 AM", color: "#fffbeb" },
           ].map((act, i) => (
             <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 12, padding: "12px 20px", borderBottom: i < 4 ? "1px solid #f8fafc" : "none" }}>
-              <div style={{ width: 32, height: 32, borderRadius: 8, background: act.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, flexShrink: 0 }}>
-                {act.icon}
-              </div>
+              <div style={{ width: 32, height: 32, borderRadius: 8, background: act.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, flexShrink: 0 }}>{act.icon}</div>
               <div style={{ flex: 1 }}>
                 <p style={{ fontSize: 12.5, color: "#334155", lineHeight: 1.4 }}>{act.text}</p>
                 <p style={{ fontSize: 11, color: "#94a3b8", marginTop: 2 }}>{act.time}</p>
@@ -352,6 +396,15 @@ export function AdminDashboard() {
           ))}
         </div>
       </div>
-    </DashboardShell>
-  );
+    ),
+    "Staff":            <PlaceholderPage title="Staff Management"  emoji="👥" accentColor="#d97706" />,
+    "Departments":      <PlaceholderPage title="Departments"       emoji="🏥" accentColor="#d97706" />,
+    "Scheduling":       <PlaceholderPage title="Scheduling"        emoji="📅" accentColor="#d97706" />,
+    "Billing & Finance":<PlaceholderPage title="Billing & Finance" emoji="💳" accentColor="#d97706" />,
+    "Inventory":        <PlaceholderPage title="Inventory"         emoji="📦" accentColor="#d97706" />,
+    "Reports":          <PlaceholderPage title="Reports"           emoji="📊" accentColor="#d97706" />,
+    "Settings":         <PlaceholderPage title="Settings"          emoji="⚙️" accentColor="#d97706" />,
+  };
+
+  return <DashboardShell role="admin" accentColor="#d97706" accentBg="#fffbeb" navItems={navItems} cards={cards} pages={pages} />;
 }
