@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom"; // ✅ FIX 1: import useNavigate
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -6,6 +7,8 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const navigate = useNavigate(); // ✅ FIX 2: initialize navigate hook
 
   async function handleLogin() {
     if (!email || !password) {
@@ -16,22 +19,22 @@ export default function LoginPage() {
     setError("");
     await new Promise((res) => setTimeout(res, 800));
 
-const roleMap = {
-  "doctor@hospital.com":  { role: "doctor",  path: "/doctor"  },
-  "patient@hospital.com": { role: "patient", path: "/patient" },
-  "nurse@hospital.com":   { role: "nurse",   path: "/nurse"   },
-  "admin@hospital.com":   { role: "admin",   path: "/admin"   },
-};
+    const roleMap = {
+      "doctor@hospital.com":  { role: "doctor",  path: "/doctor"  },
+      "patient@hospital.com": { role: "patient", path: "/patient" },
+      "nurse@hospital.com":   { role: "nurse",   path: "/nurse"   },
+      "admin@hospital.com":   { role: "admin",   path: "/admin"   },
+    };
 
-const match = roleMap[email];
-if (match) {
-  localStorage.setItem("token", "mock-token");
-  localStorage.setItem("role", match.role);
-  window.location.href = match.path;
-} else {
-  setError("Wrong email or password. Please try again.");
-  setLoading(false);
-}
+    const match = roleMap[email];
+    if (match) {
+      localStorage.setItem("token", "mock-token");
+      localStorage.setItem("role", match.role);
+      navigate(match.path); // ✅ FIX 3: use navigate() instead of window.location.href
+    } else {
+      setError("Wrong email or password. Please try again.");
+      setLoading(false);
+    }
   }
 
   return (

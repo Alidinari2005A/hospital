@@ -6,6 +6,7 @@ import LabResults    from "../pages/03-LabResults";
 import Prescriptions from "../pages/04-Prescriptions";
 import Messages      from "../pages/05-Messages";
 import Analytics     from "../pages/06-Analytics";
+import Settings      from "../pages/SettingsPage"; // ✅ ADDED
 
 /* ─── FONTS & GLOBAL STYLES ─── */
 const GLOBAL_CSS = `
@@ -132,8 +133,8 @@ const RECENT_ACTIVITY = [
 ];
 
 const ONCALL = [
-  { name: "Dr. Sofia Reyes", spec: "Emergency",     status: "On duty", avatar: "SR" },
-  { name: "Dr. Omar Faris",  spec: "Anesthesiology",status: "Standby", avatar: "OF" },
+  { name: "Dr. Sofia Reyes", spec: "Emergency",      status: "On duty", avatar: "SR" },
+  { name: "Dr. Omar Faris",  spec: "Anesthesiology", status: "Standby", avatar: "OF" },
 ];
 
 /* ─── ICON HELPER ─── */
@@ -675,7 +676,7 @@ export default function DoctorDashboard() {
   const notifCount = 3;
   const msgCount   = MESSAGES.filter(m => m.unread).length;
 
-  // ── THIS is the router — maps nav IDs to page components ──
+  // ── Router — maps nav IDs to page components ──
   const renderPage = () => {
     switch (activeNav) {
       case "dashboard":     return <Overview STATS={STATS} APPOINTMENTS={APPOINTMENTS} STATUS_CONFIG={STATUS_CONFIG} />;
@@ -686,7 +687,7 @@ export default function DoctorDashboard() {
       case "prescriptions": return <Prescriptions />;
       case "messages":      return <Messages />;
       case "analytics":     return <Analytics />;
-      case "settings":      return <PlaceholderPage title="Settings" emoji="⚙️" />;
+      case "settings":      return <Settings />;  // ✅ FIXED — was PlaceholderPage
       default:              return <PlaceholderPage title="Page Not Found" emoji="❓" />;
     }
   };
@@ -753,7 +754,7 @@ export default function DoctorDashboard() {
           </div>
         </header>
 
-        {/* Scrollable content — now driven by renderPage() */}
+        {/* Scrollable content */}
         <main style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "20px 24px" }}>
           {renderPage()}
         </main>

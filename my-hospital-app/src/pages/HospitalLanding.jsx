@@ -42,6 +42,15 @@ const HospitalLanding = () => {
     }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;800&display=swap');
+
+        /* ✅ FIX: ensure html and body never block vertical scroll */
+        html, body {
+          overflow-x: hidden;
+          overflow-y: auto !important;
+          height: auto !important;
+          min-height: 100%;
+        }
+
         * { box-sizing: border-box; scroll-behavior: smooth; }
         body { margin: 0; padding: 0; }
         .glass-nav { 
@@ -109,7 +118,7 @@ const HospitalLanding = () => {
             <span style={{ fontWeight: 800, fontSize: '21px', letterSpacing: '-0.5px', color: '#0f172a' }}>MedCore</span>
           </motion.div>
 
-          {/* Desktop Nav Links — FIXED: single style prop */}
+          {/* Desktop Nav Links */}
           <motion.div 
             className="desktop-menu"
             initial={{ opacity: 0, y: -10 }}
